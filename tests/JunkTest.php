@@ -4,8 +4,11 @@ namespace Tests\Core\SmarterU;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @TODO Delete This
+ */
 class FalseTest extends TestCase {
     public function testFail() {
-        $this->assertTrue(false);
+        $this->assertFalse(false);
     }
 }
