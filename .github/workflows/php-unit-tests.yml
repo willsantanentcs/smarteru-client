@@ -19,7 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: 'cp ./config/config-sample ./tests/config'
     - uses: actions/cache@v2
       id: cache-db
       with:
