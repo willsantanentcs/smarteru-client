@@ -19,19 +19,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      id: cache-db
-      with:
-          path: ~/.composer/cache
-          key: db
-    - uses: php-actions/composer@v6
-      with:
-          php_version: "8.0"
-          php_extensions: gd mysqli pdo_mysql zip
+    - uses: php-actions/composer@v5 # or alternative dependency management
     - uses: php-actions/phpunit@v3
-      with:
-        php_version: "8.0"
-        configuration: ./phpunit.xml
-        memory_limit: 256M
-        testsuite: ci
-        exclude_group: ci-unavailable
