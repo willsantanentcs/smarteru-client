@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains the class Core\SmarterU\User.
+ * This file contains the class Core\SmarterU\DataTypes\User.
  *
  * @author Brian Reich <brian.reich@thecoresolution.com>
  * @copyright $year$ Core Business Solutions
@@ -10,7 +10,9 @@
  * @version $version$
  */
 
-namespace Core\SmarterU;
+declare(strict_types=1);
+
+namespace SmarterU\DataTypes;
 
 /**
  * A User in SmarterU.
