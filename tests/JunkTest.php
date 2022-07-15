@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @TODO Delete This
  */
-class FalseTest extends TestCase {
+class JunkTest extends TestCase {
     public function testFail() {
         $this->assertFalse(false);
     }
