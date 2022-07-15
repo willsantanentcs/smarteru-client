@@ -59,8 +59,11 @@ class MatchTag {
      * @throws InvalidArgumentException if $matchType is not one of the valid types
      */
     public function setMatchType(string $matchType): self {
-        if ($matchType !== self::MATCH_EXACT && $matchType !== self::MATCH_CONTAINS) {
-            throw new InvalidArgumentException('"$matchType" must be either "EXACT" or "CONTAINS".');
+        if ($matchType !== self::MATCH_EXACT
+        && $matchType !== self::MATCH_CONTAINS) {
+            throw new InvalidArgumentException(
+                '"$matchType" must be either "EXACT" or "CONTAINS".'
+            );
         }
         $this->matchType = $matchType;
         return $this;

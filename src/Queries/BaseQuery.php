@@ -85,8 +85,8 @@ abstract class BaseQuery {
 
         $baseXml = simplexml_load_string($xmlString);
 
-        $baseXml->addChild('AccountAPI', $accountApi);
-        $baseXml->addChild('UserAPI', $userApi);
+        $baseXml->addChild('AccountAPI', $this->getAccountApi());
+        $baseXml->addChild('UserAPI', $this->getUserApi());
 
         return $baseXml;
     }

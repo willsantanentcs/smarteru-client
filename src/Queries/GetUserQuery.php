@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace SmarterU\Queries;
 
+use SmarterU\Exceptions\InvalidArgumentException;
 use SmarterU\Queries\BaseQuery;
 
 
@@ -105,4 +106,30 @@ class GetUserQuery extends BaseQuery {
         $this->employeeId = $employeeId;
         return $this;
     }
+
+    /**
+     * Generate an XML representation of the query, to be passed into the
+     * SmarterU API.
+     *
+     * @return SimpleXMLElement the XML representation of the query
+     * @throws InvalidArgumentException if all parameters are missing
+     */
+    public function toXml(): SimpleXMLElement {
+        $xml = $this->createBasicXml();
+        $xml->addChild('method', 'getUser');
+        $parameters = $xml->addChild('parameters');
+        $user = $parameters->addChild('User');
+        if ($this->getId() !== null) {
+            $user->addChild('ID', $this->getId());
+        }
+        else if ($this->getEmail() !== null) {
+            $user->addChild('Email', $this->getEmail());
+        }
+        else if ($this->getEmployeeId() !== null) {
+            $user->addChild('EmployeeID', $this->getEmployeeId());
+        }
+        else {
+            throw new InvalidArgumentException('GetUserQuery must have a parameter');
+        }
+        return $xml;
 }

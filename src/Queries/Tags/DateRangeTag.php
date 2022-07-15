@@ -66,7 +66,7 @@ class DateRangeTag {
      * @return self
      */
     public function setDateTo(DateTime $dateTo): self {
-        $this->dateFrom = $dateTo->format('d/m/Y');
+        $this->dateTo = $dateTo->format('d/m/Y');
         return $this;
     }
 }

@@ -394,45 +394,67 @@ class ListUsersQuery extends BaseQuery {
     /**
      * Generate an XML representation of the query, to be passed into the
      * SmarterU API.
+     *
+     * @return SimpleXMLElement the XML representation of the query
      */
     public function toXml(): SimpleXMLElement {
-        $xmlString = $this->createBasicXml();
-        $xmlString->addChild('method', 'listUsers');
-        $parameters = $xmlString->addChild('parameters');
+        $xml = $this->createBasicXml();
+        $xml->addChild('method', 'listUsers');
+        $parameters = $xml->addChild('parameters');
         $user = $parameters->addChild('User');
-        $user->addChild('Page', $this->page);
-        if (!empty($this->pageSize)) {
-            $user->addChild('PageSize', $this->pageSize);
+        $user->addChild('Page', $this->getPage());
+        if (!empty($this->getPageSize())) {
+            $user->addChild('PageSize', $this->getPageSize());
         }
-        if (!empty($this->sortField)) {
-            $user->addChild('SortField', $this->sortField);
+        if (!empty($this->getSortField())) {
+            $user->addChild('SortField', $this->getSortField());
         }
-        if (!empty($this->sortOrder)) {
-            $user->addChild('SortOrder', $this->sortOrder);
+        if (!empty($this->getSortOrder())) {
+            $user->addChild('SortOrder', $this->getSortOrder());
         }
         $filters = $user->addChild('Filters');
         if ($this->includeUsersTag()) {
             $users = $filter->addChild('Users');
             $userIdentifier = $users->addChild('UserIdentifier');
-            if (!empty($this->email)) {
+            if (!empty($this->getEmail())) {
                 $email = $userIdentifier->addChild('email');
-                $email->addChild('MatchType', $this->email->getMatchType());
-                $email->addChild('Value', $this->email->getValue());
+                $email->addChild('MatchType', $this->getEmail()->getMatchType());
+                $email->addChild('Value', $this->getEmail()->getValue());
             }
             if (!empty($this->employeeId)) {
                 $employeeId = $userIdentifier->addChild('EmployeeID');
-                $employeeId->addChild('MatchType', $this->employeeId->getMatchType());
-                $employeeId->addChild('Value', $this->employeeId->getValue());
+                $employeeId->addChild('MatchType', $this->getEmployeeId()->getMatchType());
+                $employeeId->addChild('Value', $this->getEmployeeId()->getValue());
             }
             if (!empty($this->name)) {
                 $name = $userIdentifier->addChild('Name');
-                $name->addChild('MatchType', $this->name->getMatchType());
-                $name->addChild('Value', $this->employeeId->getValue());
+                $name->addChild('MatchType', $this->getName()->getMatchType());
+                $name->addChild('Value', $this->getName()->getValue());
             }
         }
-        if (!empty($this->groupName)) {
-            $filters->addChild('GroupName', $this->groupName);
+        if (!empty($this->getGroupName())) {
+            $filters->addChild('GroupName', $this->getGroupName());
         }
+        if (!empty($this->getUserStatus())) {
+            $filters->addChild('UserStatus', $this->getUserStatus());
+        }
+        if (!empty($this->getCreatedDate())) {
+            $created = $filters->addChild('CreatedDate');
+            $created->addChild('CreatedDateFrom', $this->getCreatedDate()->getDateFrom());
+            $created->addChild('CreatedDateTo', $this->getCreatedDate()->getDateTo());
+        }
+        if (!empty($this->getModifiedDate())) {
+            $modified = $filters->addChild('ModifiedDate');
+            $modified->addChild('ModifiedDateFrom', $this->getModifiedDate()->getDateFrom());
+            $modified->addChild('ModifiedDateTo', $this->getModifiedDate()->getDateTo());
+        }
+        if (!empty($this->getTeams())) {
+            $teamsFilter = $filters->addChild('Teams');
+            foreach ($this->getTeams() as $team) {
+                $teamsFilter->addChild('TeamName', $team);
+            }
+        }
+        return $xml;
     }
 
     /**
