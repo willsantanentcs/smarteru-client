@@ -5,8 +5,8 @@
  *
  * @author      Will Santanen <will.santanen@thecoresolution.com>
  * @copyright   $year$ Core Business Solutions
- * @license     Proprietary
- * @version     $version
+ * @license     MIT
+ * @version     $version$
  * @since       2022/07/13
  */
 

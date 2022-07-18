@@ -5,7 +5,7 @@
  *
  * @author      Will Santanen <will.santanen@thecoresolution.com>
  * @copyright   $year$ Core Business Solutions
- * @license     Proprietary
+ * @license     MIT
  * @version     $version$
  * @since       2022/07/13
  */
@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace SmarterU\Queries;
 
+use SimpleXMLElement;
 use SmarterU\Exceptions\InvalidArgumentException;
 use SmarterU\Queries\BaseQuery;
 use SmarterU\Queries\Tags\DateRangeTag;
@@ -395,9 +396,9 @@ class ListUsersQuery extends BaseQuery {
      * Generate an XML representation of the query, to be passed into the
      * SmarterU API.
      *
-     * @return SimpleXMLElement the XML representation of the query
+     * @return string the XML representation of the query
      */
-    public function toXml(): SimpleXMLElement {
+    public function toXml(): string {
         $xml = $this->createBasicXml();
         $xml->addChild('method', 'listUsers');
         $parameters = $xml->addChild('parameters');
@@ -454,7 +455,7 @@ class ListUsersQuery extends BaseQuery {
                 $teamsFilter->addChild('TeamName', $team);
             }
         }
-        return $xml;
+        return $xml->asXML();
     }
 
     /**

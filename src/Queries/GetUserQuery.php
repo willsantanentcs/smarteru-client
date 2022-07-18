@@ -5,8 +5,8 @@
  *
  * @author      Will Santanen <will.santanen@thecoresolution.com>
  * @copyright   $year$ Core Business Solutions
- * @license     Proprietary
- * @version     $version
+ * @license     MIT
+ * @version     $version$
  * @since       2022/07/13
  */
 
@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace SmarterU\Queries;
 
+use SimpleXMLElement;
 use SmarterU\Exceptions\InvalidArgumentException;
 use SmarterU\Queries\BaseQuery;
 
@@ -111,10 +112,10 @@ class GetUserQuery extends BaseQuery {
      * Generate an XML representation of the query, to be passed into the
      * SmarterU API.
      *
-     * @return SimpleXMLElement the XML representation of the query
+     * @return string the XML representation of the query
      * @throws InvalidArgumentException if all parameters are missing
      */
-    public function toXml(): SimpleXMLElement {
+    public function toXml(): string {
         $xml = $this->createBasicXml();
         $xml->addChild('method', 'getUser');
         $parameters = $xml->addChild('parameters');
@@ -131,5 +132,5 @@ class GetUserQuery extends BaseQuery {
         else {
             throw new InvalidArgumentException('GetUserQuery must have a parameter');
         }
-        return $xml;
+        return $xml->asXML();
 }

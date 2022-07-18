@@ -5,7 +5,7 @@
  *
  * @author Brian Reich <brian.reich@thecoresolution.com>
  * @copyright $year$ Core Business Solutions
- * @license Proprietary
+ * @license MIT
  * @since 2022/06/16
  * @version $version$
  */
@@ -13,6 +13,8 @@
 declare(strict_types=1);
 
 namespace SmarterU\DataTypes;
+
+use SimpleXMLElement;
 
 /**
  * A User in SmarterU.
@@ -369,5 +371,35 @@ class User {
         $this->learnerNotifications = $learnerNotifications;
 
         return $this;
+    }
+
+    /**
+     * Generate an XML representation of the user, to be passed into queries.
+     *
+     * @return SimpleXMLElement an XML representation of the user
+     */
+    public function toSimpleXML(): SimpleXMLElement {
+        $xmlString = <<<XML
+        <Info>
+        </Info>
+        XML;
+
+        $xml = simplexml_load_string($xmlString);
+
+        $xml->addChild('Email', $this->getEmail());
+        $xml->addChild('EmployeeID', $this->getEmployeeId());
+        $xml->addChild('GivenName', $this->getGivenName());
+        $xml->addChild('Surname', $this->getSurname());
+        $xml->addChild('Password', $this->getPassword());
+        if (!empty($this->getTimezone())) {
+            $xml->addChild('TimeZone', $this->getTimezone());
+        }
+        $xml->addChild('LearnerNotifications', $this->getLearnerNotifications());
+        $xml->addChild('SupervisorNotifications', $this->getSupervisorNotifications());
+        $xml->addChild('SendEmailTo', $this->getSendEmailTo());
+        $xml->addChild('AlternateEmail', $this->getAlternateEmail());
+        $xml->addChild('AuthenticationType', $this->getAuthenticationType());
+
+        return $xml;
     }
 }
