@@ -68,7 +68,20 @@ class Client {
 
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
         $response = $httpClient->request('POST', $POST_URL, ['body' => $xml]);
+        $body = (string) $response->getBody();
+        $bodyAsXml = simplexml_load_string($body);
 
+        $result = $bodyAsXml->Success;
+        $email = $bodyAsXml->Info->Email;
+        $employeeId = $bodyAsXml->Info->EmployeeID;
+
+        $errors = $bodyAsXml->Errors;
+        $errorMessages = [];
+        if (count($errors) !== 0) {
+            foreach ($errors->children() as $error) {
+                $errorMessages[$error->ErrorID] = $error->ErrorMessage;
+            }
+        }
     }
 
     /**
