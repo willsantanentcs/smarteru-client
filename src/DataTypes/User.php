@@ -149,30 +149,30 @@ class User {
      * A container for the user's supervisors. The supervisor must already exist
      * in SmarterU.
      */
-    protected array $supervisors;
+    protected array $supervisors = [];
 
     /**
      * The name of the organization to assign to the user. The organization name
      * provided must already exist within your SmarterU account.
      */
-    protected string $organization;
+    protected ?string $organization;
 
     /**
      * A container for the teams to assign to the user. The team names provided
      * must already exist within your SmarterU account.
      */
-    protected array $teams;
+    protected array $teams = [];
 
     /**
      * A container for the custom user fields in your account. The custom fields
      * must alread exist within your SmarterU account.
      */
-    protected array $customFields;
+    protected array $customFields = [];
 
     /**
      * The language you want the user's account to use.
      */
-    protected string $language;
+    protected ?string $language;
 
     /**
      * The user's status.
@@ -182,12 +182,12 @@ class User {
     /**
      * The title of the user.
      */
-    protected string $title;
+    protected ?string $title;
 
     /**
      * The division of the user.
      */
-    protected string $division;
+    protected ?string $division;
 
     /**
      * Specifies whether the user can provide feedback on online courses.
@@ -197,47 +197,47 @@ class User {
     /**
      * The user's primary phone number.
      */
-    protected string $phonePrimary;
+    protected ?string $phonePrimary;
 
     /**
      * The user's alternate phone number.
      */
-    protected string $phoneAlternate;
+    protected ?string $phoneAlternate;
 
     /**
      * The user's mobile phone number.
      */
-    protected string $phoneMobile;
+    protected ?string $phoneMobile;
 
     /**
      * The user's fax number.
      */
-    protected string $fax;
+    protected ?string $fax;
 
     /**
      * The user's website.
      */
-    protected string $website;
+    protected ?string $website;
 
     /**
      * The first address line of the user.
      */
-    protected string $address1;
+    protected ?string $address1;
 
     /**
      * The secondary address line of the user.
      */
-    protected string $address2;
+    protected ?string $address2;
 
     /**
      * The city of the user's address.
      */
-    protected string $city;
+    protected ?string $city;
 
     /**
      * The province or state of the user's address.
      */
-    protected string $province;
+    protected ?string $province;
 
     /**
      * The country of the user's address. Acceptable values are "Canada", "United
@@ -560,9 +560,9 @@ class User {
     /**
      * Get the name of the organization to assign to the user.
      *
-     * @return string the name of the organization
+     * @return ?string the name of the organization
      */
-    public function getOrganization(): string {
+    public function getOrganization(): ?string {
         return $this->organization;
     }
 
@@ -570,10 +570,10 @@ class User {
      * Set the name of the organization to assign to the user. The organization
      * must already exist within your SmarterU account.
      *
-     * @param string $organization the name of the organization
+     * @param ?string $organization the name of the organization
      * @return self
      */
-    public function setOrganization(string $organization): self {
+    public function setOrganization(?string $organization): self {
         $this->organization = $organization;
         return $this;
     }
