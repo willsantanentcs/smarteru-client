@@ -32,39 +32,69 @@ class Client {
      * The URL to POST to.
      */
     protected const POST_URL = 'https://api.smarteru.com/apiv2/';
+
+    /**
+     * The account API key, used for authentication purposes when making
+     * requests to the SmarterU API.
+     */
+    protected string $accountApi;
+
+    /**
+     * The user API key, used for authentication purposes when making
+     * requests to the SmarterU API.
+     */
+    protected string $userApi;
+
+    /**
+     * Get the account API key.
+     *
+     * @return string the account API key
+     */
+    public function getAccountApi(): string {
+        return $this->accountApi;
+    }
+
+    /**
+     * Set the account API key.
+     *
+     * @param string $accountApi the account API key
+     * @return self
+     */
+    public function setAccountApi(string $accountApi): self {
+        $this->accountApi = $accountApi;
+        return $this;
+    }
+
+    /**
+     * Get the user API key.
+     *
+     * @return string the user API key
+     */
+    public function getUserApi(): string {
+        return $this->userApi;
+    }
+
+    /**
+     * Set the user API key.
+     *
+     * @param string $userApi the user API key
+     * @return self
+     */
+    public function setUserApi(string $userApi): self {
+        $this->userApi = $userApi;
+        return $this;
+    }
+
     /**
      * Make a CreateUser query to the SmarterU API.
      *
      * @param User $user the user to create
      */
     public function createUser(User $user) {
-        $query = new BaseQuery();
-        //TODO initialize API keys
-
-        $xml = $query->createBaseXml();
-        $xml->addChild('Method', 'CreateUser');
-        $parameters = $xml->addChild('Parameters');
-        $userTag = $parameters->addChild('User');
-        $info = $userTag->addChild('Info');
-
-        $info->addChild('Email', $user->getEmail());
-        $info->addChild('EmployeeID', $user->getEmployeeId());
-        $info->addChild('GivenName', $user->getGivenName());
-        $info->addChild('Surname', $user->getSurname());
-        $info->addChild('Password', $user->getPassword());
-        if (!empty($user->getTimezone())) {
-            $info->addChild('TimeZone', $user->getTimezone());
-        }
-        $info->addChild('LearnerNotifications', $user->getLearnerNotifications());
-        $info->addChild('SupervisorNotifications', $user->getSupervisorNotifications());
-        $info->addChild('SendEmailTo', $user->getSendEmailTo());
-        $info->addChild('AlternateEmail', $user->getAlternateEmail());
-        $info->addChild('AuthenticationType', $user->getAuthenticationType());
-
-        $profile = $userTag->addChild('Profile');
-        
-
-
+        $xml = $user->toSimpleXml(
+            $this->getAccountApi(),
+            $this->getUserApi(), 'CreateUser'
+        );
 
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
         $response = $httpClient->request('POST', $POST_URL, ['body' => $xml]);
@@ -114,30 +144,10 @@ class Client {
      * @param User $user The User to update
      */
     public function updateUser(User $user) {
-        $query = new BaseQuery();
-        //TODO initialize API keys
-
-        $xml = $query->createBaseXml();
-        $xml->addChild('Method', 'updateUser');
-        $parameters = $xml->addChild('Parameters');
-        $userTag = $parameters->addChild('User');
-        $info = $userTag->addChild('Info');
-
-        $info->addChild('Email', $user->getEmail());
-        $info->addChild('EmployeeID', $user->getEmployeeId());
-        $info->addChild('GivenName', $user->getGivenName());
-        $info->addChild('Surname', $user->getSurname());
-        $info->addChild('Password', $user->getPassword());
-        if (!empty($user->getTimezone())) {
-            $info->addChild('TimeZone', $user->getTimezone());
-        }
-        $info->addChild('LearnerNotifications', $user->getLearnerNotifications());
-        $info->addChild('SupervisorNotifications', $user->getSupervisorNotifications());
-        $info->addChild('SendEmailTo', $user->getSendEmailTo());
-        $info->addChild('AlternateEmail', $user->getAlternateEmail());
-        $info->addChild('AuthenticationType', $user->getAuthenticationType());
-
-        $profile = $userTag->addChild('Profile');
+        $xml = $user->toSimpleXml(
+            $this->getAccountApi(),
+            $this->getUserApi(), 'UpdateUser'
+        );
 
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
         $response = $httpClient->request('POST', $POST_URL, ['body' => $xml->asXML()]);
