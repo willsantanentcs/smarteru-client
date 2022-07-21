@@ -23,21 +23,22 @@ use SimpleXMLElement;
  */
 class User {
     /**
-     * The parameter used to query for only active users.
+     * Indicates the user's account is active.
      */
     public const STATUS_ACTIVE = 'Active';
 
     /**
-     * The parameter used to query for only inactive users.
+     * Indicates the user's account is inactive.
      */
     public const STATUS_INACTIVE = 'Inactive';
 
-    /**
-     * The parameter used to query for all users.
-     */
-    public const STATUS_ALL = 'All';
-
     #region Properties
+
+    /**
+     * The user ID of the user.
+     */
+    protected ?string $id;
+
     /**
      * The email address of the user. This tag can be empty if an EmployeeID
      * value is provided.
@@ -297,6 +298,26 @@ class User {
     #endregion Properties
 
     #region Getters and Setters
+
+    /**
+     * Gets the user's ID.
+     *
+     * @return ?string the user's ID
+     */
+    public function getId(): ?string {
+        return $this->id;
+    }
+
+    /**
+     * Sets the user's ID.
+     *
+     * @param string $id the user's ID
+     * @return self
+     */
+    public function setId(string $id): self {
+        $this->id = $id;
+        return $this;
+    }
 
     /**
      * Returns the User's authentication type.
@@ -661,10 +682,9 @@ class User {
      */
     public function setUserStatus(string $userStatus): self {
         if ($userStatus !== self::STATUS_ACTIVE
-        && $userStatus !== self::STATUS_INACTIVE
-        && $userStatus !== self::STATUS_ALL) {
+        && $userStatus !== self::STATUS_INACTIVE) {
             throw new InvalidArgumentException(
-                '"$userStatus" must be either "ACTIVE", "INACTIVE", or "ALL".'
+                '"$userStatus" must be either "ACTIVE" or "INACTIVE".'
             );
         }
         $this->userStatus = $userStatus;

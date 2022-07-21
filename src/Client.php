@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace SmarterU;
 
+use DateTime;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Request;
@@ -109,9 +110,13 @@ class Client {
         $errorMessages = [];
         if (count($errors) !== 0) {
             foreach ($errors->children() as $error) {
-                $errorMessages[$error->ErrorID] = $error->ErrorMessage;
+                // TODO process errors
             }
         }
+
+        return (new User())
+            ->setEmail($email);
+            ->setEmployeeId($employeeId);
     }
 
     /**
@@ -124,6 +129,61 @@ class Client {
         $xml = $query->toXml();
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
         $response = $httpClient->request('POST', $POST_URL, ['body' => $xml]);
+        $body = (string) $response->getBody();
+        $bodyAsXml = simplexml_load_string($body);
+
+        $result = $bodyAsXml->Success;
+        $user = $bodyAsXml->Info->User;
+        $teams = [];
+        foreach ($user->Teams->children() as $team) {
+            $teams[] = $team;
+        }
+        $userAsRead = (new User())
+            ->setId($user->ID)
+            ->setEmail($user->Email)
+            ->setEmployeeId($user->EmployeeID)
+            ->setCreatedDate(new DateTime($user->CreatedDate))
+            ->setModifiedDate(new DateTime($user->ModifiedDate))
+            ->setGivenName($user->GivenName)
+            ->setSurname($user->Surname)
+            ->setLanguage($user->Language)
+            ->setAllowFeedback((bool) $user->AllowFeedback)
+            ->setStatus($user->Status)
+            ->setAuthenticationType($user->AuthenticationType)
+            ->setTimezone($user->Timezone)
+            ->setAlternateEmail($user->AlternateEmail)
+            ->setHomeGroup($user->HomeGroup);
+            ->setOrganization($user->Organization)
+            ->setTitle($user->Title)
+            ->setDivision($user->Division)
+            // TODO implement supervisors. For iteration 1, we can assume it's blank
+            ->setPhonePrimary($user->phonePrimary)
+            ->setPhoneAlternate($user->phoneAlternate)
+            ->setSendMailTo($user->sendMailTo)
+            ->setSendEmailTo($user->sendEmailTo)
+            ->setFax($user->Fax)
+            ->setAddress1($user->Address1)
+            ->setAddress2($user->Address2)
+            ->setCity($user->City)
+            ->setPostalCode($user->PostalCode)
+            ->setProvince($user->Province)
+            ->setCountry($user->Country)
+            ->setLearnerNotifications((bool) $user->SendWeeklyTaskReminder)
+            ->setSupervisorNotifications((bool) $user->SendWeeklyProgressSummary)
+            ->setTeams($teams);
+            // TODO implement roles. For iteration 1, we can assume it's blank.
+            // TODO implement custom fields. For iteration 1, we can assume it's blank.
+            // TODO implement venues. For iteration 1, we can assume it's blank.
+            // TODO implement wages. For iteration 1, we can assume it's blank.
+            ->setReceiveNotifications($user->ReceiveNotifications);
+
+        $errors = $bodyAsXml->Errors;
+        $errorMessages = [];
+        if (count($errors) !== 0) {
+            foreach ($errors->children() as $error) {
+                // TODO process errors
+            }
+        }
     }
 
     /**
@@ -136,6 +196,43 @@ class Client {
         $xml = $query->toXml();
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
         $response = $httpClient->request('POST', $POST_URL, ['body' => $xml->asXML()]);
+        $body = (string) $response->getBody();
+        $bodyAsXml = simplexml_load_string($body);
+
+        $result = $bodyAsXml->Success;
+        $users = $bodyAsXml->Info->Users;
+
+        $results = [];
+
+        foreach ($users->children() as $user) {
+            $teams = [];
+            foreach ($user->Teams->children() as $team) {
+                $teams[] = $team;
+            }
+            results[] = (new User())
+                ->setId($user->ID)
+                ->setEmail($user-Email)
+                ->setEmployeeId($user->EmployeeID)
+                ->setGivenName($user->GivenName)
+                ->setSurname($user->Surname)
+                ->setStatus($user->Status)
+                ->setTitle($user->Title)
+                ->setDivision($user->Division)
+                ->setHomeGroup($user->HomeGroup)
+                ->setCreatedDate(new DateTime($user->CreatedDate))
+                ->setModifiedDate(new DateTime($user->ModifiedDate))
+                ->setTeams($teams);
+        }
+
+        $errors = $bodyAsXml->Errors;
+        $errorMessages = [];
+        if (count($errors) !== 0) {
+            foreach ($errors->children() as $error) {
+                // TODO process errors
+            }
+        }
+
+        return $results;
     }
 
     /**
@@ -151,5 +248,23 @@ class Client {
 
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
         $response = $httpClient->request('POST', $POST_URL, ['body' => $xml->asXML()]);
+        $body = (string) $response->getBody();
+        $bodyAsXml = simplexml_load_string($body);
+
+        $result = $bodyAsXml->Success;
+        $email = $bodyAsXml->Info->Email;
+        $employeeId = $bodyAsXml->Info->EmployeeID;
+
+        $errors = $bodyAsXml->Errors;
+        $errorMessages = [];
+        if (count($errors) !== 0) {
+            foreach ($errors->children() as $error) {
+                // TODO process errors
+            }
+        }
+
+        return (new User())
+            ->setEmail($email);
+            ->setEmployeeId($employeeId);
     }
 }
