@@ -20,6 +20,7 @@ use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Request;
 use SimpleXMLElement;
 use SmarterU\DataTypes\User;
+use SmarterU\Exceptions\SmarterUException;
 use SmarterU\Queries\BaseQuery;
 use SmarterU\Queries\GetUserQuery;
 use SmarterU\Queries\ListUsersQuery;
@@ -107,11 +108,9 @@ class Client {
         $employeeId = $bodyAsXml->Info->EmployeeID;
 
         $errors = $bodyAsXml->Errors;
-        $errorMessages = [];
         if (count($errors) !== 0) {
-            foreach ($errors->children() as $error) {
-                // TODO process errors
-            }
+            $errorMessages = $this->generateErrorString($errors);
+            throw new SmarterUException($errorMessages);
         }
 
         return (new User())
@@ -178,11 +177,9 @@ class Client {
             ->setReceiveNotifications($user->ReceiveNotifications);
 
         $errors = $bodyAsXml->Errors;
-        $errorMessages = [];
         if (count($errors) !== 0) {
-            foreach ($errors->children() as $error) {
-                // TODO process errors
-            }
+            $errorMessages = $this->generateErrorString($errors);
+            throw new SmarterUException($errorMessages);
         }
     }
 
@@ -225,11 +222,9 @@ class Client {
         }
 
         $errors = $bodyAsXml->Errors;
-        $errorMessages = [];
         if (count($errors) !== 0) {
-            foreach ($errors->children() as $error) {
-                // TODO process errors
-            }
+            $errorMessages = $this->generateErrorString($errors);
+            throw new SmarterUException($errorMessages);
         }
 
         return $results;
@@ -256,15 +251,32 @@ class Client {
         $employeeId = $bodyAsXml->Info->EmployeeID;
 
         $errors = $bodyAsXml->Errors;
-        $errorMessages = [];
         if (count($errors) !== 0) {
-            foreach ($errors->children() as $error) {
-                // TODO process errors
-            }
+            $errorMessages = $this->generateErrorString($errors);
+            throw new SmarterUException($errorMessages);
         }
 
         return (new User())
             ->setEmail($email);
             ->setEmployeeId($employeeId);
+    }
+
+    /**
+     * Translate the error message(s) returned by the SmarterU API to a string,
+     * used to throw an exception in the event that an error occurs at some
+     * point during the API call.
+     *
+     * @param SimpleXMLElement $errors the <errors> portion of the response
+     * @return string a string representation of these errors
+     */
+    private function generateErrorString(SimpleXMLElement $errors) {
+        $errorString = '';
+        foreach ($errors->children() as $error) {
+            $errorString .= $error->ErrorID;
+            $errorString .= ': ';
+            $errorString .= $error->ErrorMessage;
+            $errorString .= '\n';
+        }
+        return $errorString;
     }
 }
