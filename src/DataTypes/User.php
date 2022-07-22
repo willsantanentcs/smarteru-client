@@ -12,10 +12,9 @@
 
 declare(strict_types=1);
 
-namespace SmarterU\DataTypes;
+namespace CBS\SmarterU\DataTypes;
 
-use SmarterU\Exceptions\InvalidArgumentException;
-use SmarterU\Queries\BaseQuery;
+use CBS\SmarterU\Queries\BaseQuery;
 use SimpleXMLElement;
 
 /**
@@ -668,26 +667,18 @@ class User {
      *
      * @return string the status of the user
      */
-    public function getUserStatus(): string {
-        return $this->userStatus;
+    public function getStatus(): string {
+        return $this->status;
     }
 
     /**
      * Set the status of the user.
      *
-     * @param string $userStatus the status of the user
+     * @param string $status the status of the user
      * @return self
-     * @throws InvalidArgumentException if the status is not one of the possible
-     *      status values
      */
-    public function setUserStatus(string $userStatus): self {
-        if ($userStatus !== self::STATUS_ACTIVE
-        && $userStatus !== self::STATUS_INACTIVE) {
-            throw new InvalidArgumentException(
-                '"$userStatus" must be either "ACTIVE" or "INACTIVE".'
-            );
-        }
-        $this->userStatus = $userStatus;
+    public function setStatus(string $status): self {
+        $this->status = $status;
         return $this;
     }
 

@@ -29,14 +29,15 @@ class GroupPermissionsTest extends TestCase {
         $groupName = 'phpunit';
         $groupId = 12;
 
-        $permissions = [
-            (new Permission())
-                ->setAction('Grant')
-                ->setCode('MANAGE_GROUP'),
-            (new Permission())
-                ->setAction('Deny')
-                ->setCode('CREATE_COURSE')
-        ];
+        $permission1 = (new Permission())
+            ->setAction('Grant')
+            ->setCode('MANAGE_GROUP');
+
+        $permission2 = (new Permission())
+            ->setAction('Deny')
+            ->setCode('CREATE_COURSE');
+
+        $permissions = [$permission1, $permission2];
 
         $groupPermission = (new GroupPermissions())
             ->setGroupName($groupName)
@@ -45,8 +46,8 @@ class GroupPermissionsTest extends TestCase {
         self::assertEquals($groupName, $groupPermission->getGroupName());
         self::assertNull($groupPermission->getGroupId());
         self::assertCount(2, $groupPermission->getPermissions());
-        self::assertContains($permissions[0], $groupPermission->getPermissions());
-        self::assertContains($permissions[1], $groupPermission->getPermissions());
+        self::assertContains($permission1, $groupPermission->getPermissions());
+        self::assertContains($permission2, $groupPermission->getPermissions());
 
         // Test that the mutually exclusive properties are mutually exclusive.
 
