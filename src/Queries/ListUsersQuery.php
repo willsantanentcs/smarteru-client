@@ -441,13 +441,13 @@ class ListUsersQuery extends BaseQuery {
         }
         if (!empty($this->getCreatedDate())) {
             $created = $filters->addChild('CreatedDate');
-            $created->addChild('CreatedDateFrom', $this->getCreatedDate()->getDateFrom());
-            $created->addChild('CreatedDateTo', $this->getCreatedDate()->getDateTo());
+            $created->addChild('CreatedDateFrom', $this->getCreatedDate()->getDateFrom()->format('d/m/Y'));
+            $created->addChild('CreatedDateTo', $this->getCreatedDate()->getDateTo()->format('d/m/Y'));
         }
         if (!empty($this->getModifiedDate())) {
             $modified = $filters->addChild('ModifiedDate');
-            $modified->addChild('ModifiedDateFrom', $this->getModifiedDate()->getDateFrom());
-            $modified->addChild('ModifiedDateTo', $this->getModifiedDate()->getDateTo());
+            $modified->addChild('ModifiedDateFrom', $this->getModifiedDate()->getDateFrom()->format('d/m/Y'));
+            $modified->addChild('ModifiedDateTo', $this->getModifiedDate()->getDateTo()->format('d/m/Y'));
         }
         if (!empty($this->getTeams())) {
             $teamsFilter = $filters->addChild('Teams');

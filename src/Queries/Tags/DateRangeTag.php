@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace SmarterU\Queries\Tags;
+namespace CBS\SmarterU\Queries\Tags;
 
 use DateTime;
 
@@ -46,7 +46,7 @@ class DateRangeTag {
      * @return self
      */
     public function setDateFrom(DateTime $dateFrom): self {
-        $this->dateFrom = $dateFrom->format('d/m/Y');
+        $this->dateFrom = $dateFrom;
         return $this;
     }
 
@@ -66,7 +66,7 @@ class DateRangeTag {
      * @return self
      */
     public function setDateTo(DateTime $dateTo): self {
-        $this->dateTo = $dateTo->format('d/m/Y');
+        $this->dateTo = $dateTo;
         return $this;
     }
 }
