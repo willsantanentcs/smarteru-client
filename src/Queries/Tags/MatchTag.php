@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace SmarterU\Queries\Tags;
+namespace CBS\SmarterU\Queries\Tags;
 
 use SmarterU\Exceptions\InvalidArgumentException;
 
@@ -22,16 +22,6 @@ use SmarterU\Exceptions\InvalidArgumentException;
  * just contain the input.
  */
 class MatchTag {
-    /**
-     * Only retrieve results that match the input exactly.
-     */
-    public const MATCH_EXACT = 'EXACT';
-
-    /**
-     * Retrieve results containing the input.
-     */
-    public const MATCH_CONTAINS = 'CONTAINS';
-
     /**
      * Which type of match to retrieve. Can only be 'EXACT' or 'CONTAINS'.
      */
@@ -56,15 +46,8 @@ class MatchTag {
      *
      * @param string $matchType The type of match to retrieve.
      * @return self
-     * @throws InvalidArgumentException if $matchType is not one of the valid types
      */
     public function setMatchType(string $matchType): self {
-        if ($matchType !== self::MATCH_EXACT
-        && $matchType !== self::MATCH_CONTAINS) {
-            throw new InvalidArgumentException(
-                '"$matchType" must be either "EXACT" or "CONTAINS".'
-            );
-        }
         $this->matchType = $matchType;
         return $this;
     }
