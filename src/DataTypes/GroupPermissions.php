@@ -12,9 +12,9 @@
 
 declare(strict_types=1);
 
-namespace SmarterU\DataTypes;
+namespace CBS\SmarterU\DataTypes;
 
-use SmarterU\DataTypes\Permission;
+use CBS\SmarterU\DataTypes\Permission;
 
 /**
  * The GroupPermissions class represents a User's affiliation with a Group
