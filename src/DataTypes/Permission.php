@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace SmarterU\DataTypes;
+namespace CBS\SmarterU\DataTypes;
 
 /**
  * The Permission class represents a permission to be granted or denied to a
