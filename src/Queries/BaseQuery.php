@@ -12,8 +12,9 @@
 
 declare(strict_types=1);
 
-namespace SmarterU\Queries;
+namespace CBS\SmarterU\Queries;
 
+use CBS\SmarterU\Exceptions\MissingValueException;
 use SimpleXMLElement;
 
 /**
@@ -78,6 +79,16 @@ abstract class BaseQuery {
      * @return SimpleXMLElement The base XML element from which to build the query
      */
     public function createBaseXml(): SimpleXMLElement {
+        if (!isset($this->accountApi)) {
+            throw new MissingValueException(
+                'Account API key must be set before creating a query.'
+            );
+        }
+        if (!isset($this->userApi)) {
+            throw new MissingValueException(
+                'User API key must be set before creating a query.'
+            );
+        }
         $xmlString = <<<XML
         <SmarterU>
         </SmarterU>
