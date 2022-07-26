@@ -42,6 +42,10 @@ class GetUserQueryTest extends TestCase {
         self::assertNull($query->getEmail());
         self::assertNull($query->getEmployeeId());
 
+        /**
+         * The three user identifiers are mutually exclusive, so calling the
+         * setter for one should set the other two to null.
+         */
         $query->setEmail($email);
         self::assertEquals($email, $query->getEmail());
         self::assertNull($query->getId());
@@ -61,7 +65,9 @@ class GetUserQueryTest extends TestCase {
         $query = new GetUserQuery();
 
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('Account API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'Account API key must be set before creating a query.'
+        );
         $xml = $query->toXml();
     }
 
@@ -75,7 +81,9 @@ class GetUserQueryTest extends TestCase {
             ->setAccountApi($accountApi);
 
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('User API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'User API key must be set before creating a query.'
+        );
         $xml = $query->toXml();
     }
 
@@ -91,7 +99,9 @@ class GetUserQueryTest extends TestCase {
             ->setUserApi($userApi);
         
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('GetUserQuery must have a parameter');
+        self::expectExceptionMessage(
+            'User identifier must be specified when creating a GetUserQuery.'
+        );
         $xml = $query->toXml();
     }
 

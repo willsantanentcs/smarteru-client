@@ -113,7 +113,8 @@ class GetUserQuery extends BaseQuery {
      * SmarterU API.
      *
      * @return string the XML representation of the query
-     * @throws InvalidArgumentException if all parameters are missing
+     * @throws MissingValueException if the Account API key, User API key,
+     *      and/or user identifier are not set.
      */
     public function toXml(): string {
         $xml = $this->createBaseXml();
@@ -130,7 +131,9 @@ class GetUserQuery extends BaseQuery {
             $user->addChild('EmployeeID', $this->getEmployeeId());
         }
         else {
-            throw new MissingValueException('GetUserQuery must have a parameter');
+            throw new MissingValueException(
+                'User identifier must be specified when creating a GetUserQuery.'
+            );
         }
         return $xml->asXML();
     }

@@ -12,57 +12,26 @@
 
 declare(strict_types=1);
 
-namespace SmarterU\Queries;
+namespace CBS\SmarterU\Queries;
 
+use CBS\SmarterU\Queries\BaseQuery;
+use CBS\SmarterU\Queries\Tags\DateRangeTag;
+use CBS\SmarterU\Queries\Tags\MatchTag;
 use SimpleXMLElement;
-use SmarterU\Exceptions\InvalidArgumentException;
-use SmarterU\Queries\BaseQuery;
-use SmarterU\Queries\Tags\DateRangeTag;
-use SmarterU\Queries\Tags\MatchTag;
 
 /**
  * Represents a listUsers query made to the SmarterU API.
  */
 class ListUsersQuery extends BaseQuery {
     /**
+     * The default user status for a query.
+     */
+    protected const STATUS_ALL = 'All';
+
+    /**
      * The maximum number of users to return.
      */
-    public const MAX_PAGE_SIZE = 1000;
-    /**
-     * The parameter used to sort by name.
-     */
-    public const SORT_BY_NAME = 'NAME';
-
-    /**
-     * The parameter used to sort by employee ID.
-     */
-    public const SORT_BY_ID = 'EMPLOYEE_ID';
-
-    /**
-     * The parameter used to sort query results in ascending order.
-     */
-    public const SORT_ASC = 'ASC';
-
-    /**
-     * The parameter used to sort query results in descending order.
-     */
-    public const SORT_DESC = 'DESC';
-
-    /**
-     * The parameter used to query for only active users.
-     */
-    public const STATUS_ACTIVE = 'Active';
-
-    /**
-     * The parameter used to query for only inactive users.
-     */
-    public const STATUS_INACTIVE = 'Inactive';
-
-    /**
-     * The parameter used to query for all users.
-     */
-    public const STATUS_ALL = 'All';
-
+    protected const MAX_PAGE_SIZE = 1000;
 
     /**
      * The page to get. Default is 1.
@@ -73,38 +42,38 @@ class ListUsersQuery extends BaseQuery {
      * The maximum number of users to return. If the PageSize tag is not provided,
      * up to 50 results are returned by default. The maximum allowed value is 1000.
      */
-    protected ?int $pageSize;
+    protected ?int $pageSize = 50;
 
     /**
      * The field used to sort the results. Can only be 'NAME' or 'EMPLOYEE_ID'.
      */
-    protected ?string $sortField;
+    protected ?string $sortField = null;
 
     /**
      * The direction that the results will be sorted. Can be either 'ASC' or 'DESC'.
      */
-    protected ?string $sortOrder;
+    protected ?string $sortOrder = null;
 
     /**
      * The tag representing the email to query for.
      */
-    protected ?MatchTag $email;
+    protected ?MatchTag $email = null;
 
     /**
      * The tag representing the employee ID to query for.
      */
-    protected ?MatchTag $employeeId;
+    protected ?MatchTag $employeeId = null;
 
     /**
      * The tag representing the name of the user to query for.
      */
-    protected ?MatchTag $name;
+    protected ?MatchTag $name = null;
 
     /**
      * This is the name of a group. Only users that have been assigned to the
      * provided group will be returned. 
      */
-    protected ?string $groupName;
+    protected ?string $groupName = null;
 
     /**
      * This is the status of the users to list. Values can be 'Active', 'Inactive',
@@ -116,18 +85,18 @@ class ListUsersQuery extends BaseQuery {
      * The date range when the user's account was created. The dates should be
      * in the format dd-mmm-yyyy.
      */
-    protected ?DateRangeTag $createdDate;
+    protected ?DateRangeTag $createdDate = null;
 
     /**
      * The date range when the user's account was last updated. The dates should
      * be in the format dd-mmm-yyyy.
      */
-    protected ?DateRangeTag $modifiedDate;
+    protected ?DateRangeTag $modifiedDate = null;
 
     /**
      * A container for the teams that a user is assigned to.
      */
-    protected ?array $teams;
+    protected ?array $teams = null;
 
     /**
      * Return the page to get.
@@ -183,14 +152,8 @@ class ListUsersQuery extends BaseQuery {
      *
      * @param ?string $sortField the field used to sort results
      * @return self
-     * @throws InvalidArgumentException if $sortField is not one of the valid fields
      */
     public function setSortField(?string $sortField): self {
-        if (!empty($sortField)
-        && $sortField !== self::SORT_BY_NAME
-        && $sortField !== self::SORT_BY_ID) {
-            throw new InvalidArgumentException('"$sortField" must be either "NAME" or "EMPLOYEE_ID".');        
-        }
         $this->sortField = $sortField;
         return $this;
     }
@@ -209,14 +172,8 @@ class ListUsersQuery extends BaseQuery {
      *
      * @param ?string $sortOrder the direction the results are sorted in
      * @return self
-     * @throws InvalidArgumentException if $sortOrder is not one of the valid orders
      */
     public function setSortOrder(?string $sortOrder): ?self {
-        if (!empty($sortOrder)
-        && $sortOrder !== self::SORT_ASC
-        && $sortOrder !== self::SORT_DESC) {
-            throw new InvalidArgumentException('"$sortOrder" must be either "ASC" or "DESC".');        
-        }
         $this->sortOrder = $sortOrder;
         return $this;
     }
@@ -315,17 +272,8 @@ class ListUsersQuery extends BaseQuery {
      *
      * @param string $userStatus the status of the users to query for
      * @return self
-     * @throws InvalidArgumentException if the status is not one of the possible
-     *      status values
      */
     public function setUserStatus(string $userStatus): self {
-        if ($userStatus !== self::STATUS_ACTIVE
-        && $userStatus !== self::STATUS_INACTIVE
-        && $userStatus !== self::STATUS_ALL) {
-            throw new InvalidArgumentException(
-                '"$userStatus" must be either "ACTIVE", "INACTIVE", or "ALL".'
-            );
-        }
         $this->userStatus = $userStatus;
         return $this;
     }
@@ -397,15 +345,17 @@ class ListUsersQuery extends BaseQuery {
      * SmarterU API.
      *
      * @return string the XML representation of the query
+     * @throws MissingValueException if the Account and/or User API keys are
+     *      not set
      */
     public function toXml(): string {
-        $xml = $this->createBasicXml();
+        $xml = $this->createBaseXml();
         $xml->addChild('method', 'listUsers');
         $parameters = $xml->addChild('parameters');
         $user = $parameters->addChild('User');
-        $user->addChild('Page', $this->getPage());
+        $user->addChild('Page', (string) $this->getPage());
         if (!empty($this->getPageSize())) {
-            $user->addChild('PageSize', $this->getPageSize());
+            $user->addChild('PageSize', (string) $this->getPageSize());
         }
         if (!empty($this->getSortField())) {
             $user->addChild('SortField', $this->getSortField());
@@ -415,10 +365,10 @@ class ListUsersQuery extends BaseQuery {
         }
         $filters = $user->addChild('Filters');
         if ($this->includeUsersTag()) {
-            $users = $filter->addChild('Users');
+            $users = $filters->addChild('Users');
             $userIdentifier = $users->addChild('UserIdentifier');
             if (!empty($this->getEmail())) {
-                $email = $userIdentifier->addChild('email');
+                $email = $userIdentifier->addChild('Email');
                 $email->addChild('MatchType', $this->getEmail()->getMatchType());
                 $email->addChild('Value', $this->getEmail()->getValue());
             }
