@@ -229,43 +229,43 @@ class ListUsersQueryTest extends TestCase {
         self::assertEquals($accountApi, $xmlAsElement->AccountAPI);
         self::assertContains('UserAPI', $elements);
         self::assertEquals($userApi, $xmlAsElement->UserAPI);
-        self::assertContains('method', $elements);
-        self::assertEquals('listUsers', $xmlAsElement->method);
-        self::assertContains('parameters', $elements);
+        self::assertContains('Method', $elements);
+        self::assertEquals('listUsers', $xmlAsElement->Method);
+        self::assertContains('Parameters', $elements);
         $parameters = [];
-        foreach ($xmlAsElement->parameters->children() as $parameter) {
+        foreach ($xmlAsElement->Parameters->children() as $parameter) {
             $parameters[] = $parameter->getName();
         }
         self::assertCount(1, $parameters);
         self::assertContains('User', $parameters);
         $userInfo = [];
-        foreach($xmlAsElement->parameters->User->children() as $user) {
+        foreach($xmlAsElement->Parameters->User->children() as $user) {
             $userInfo[] = $user->getName();
         }
         self::assertCount(5, $userInfo);
         self::assertContains('Page', $userInfo);
         self::assertEquals(
             $page,
-            (int) $xmlAsElement->parameters->User->Page
+            (int) $xmlAsElement->Parameters->User->Page
         );
         self::assertContains('PageSize', $userInfo);
         self::assertEquals(
             $pageSize,
-            (int) $xmlAsElement->parameters->User->PageSize
+            (int) $xmlAsElement->Parameters->User->PageSize
         );
         self::assertContains('SortField', $userInfo);
         self::assertEquals(
             $sortField,
-            $xmlAsElement->parameters->User->SortField
+            $xmlAsElement->Parameters->User->SortField
         );
         self::assertContains('SortOrder', $userInfo);
         self::assertEquals(
             $sortOrder,
-            $xmlAsElement->parameters->User->SortOrder
+            $xmlAsElement->Parameters->User->SortOrder
         );
         self::assertContains('Filters', $userInfo);
         $filters = [];
-        foreach ($xmlAsElement->parameters->User->Filters->children() as $filter) {
+        foreach ($xmlAsElement->Parameters->User->Filters->children() as $filter) {
             $filters[] = $filter->getName();
         }
         self::assertCount(6, $filters);
@@ -276,53 +276,53 @@ class ListUsersQueryTest extends TestCase {
         self::assertContains('ModifiedDate', $filters);
         self::assertContains('Teams', $filters);
         $users = [];
-        foreach ($xmlAsElement->parameters->User->Filters->Users->children() as $user) {
+        foreach ($xmlAsElement->Parameters->User->Filters->Users->children() as $user) {
             $users[] = $user->getName();
         }
         self::assertCount(1, $users);
         self::assertContains('UserIdentifier', $users);
         $userIdentifiers = [];
-        foreach($xmlAsElement->parameters->User->Filters->Users->UserIdentifier->children() as $identifier) {
+        foreach($xmlAsElement->Parameters->User->Filters->Users->UserIdentifier->children() as $identifier) {
             $userIdentifiers[] = $identifier->getName();
         }
         self::assertCount(3, $userIdentifiers);
         self::assertContains('Email', $userIdentifiers);
         self::assertEquals(
             $email->getMatchType(),
-            $xmlAsElement->parameters->User->Filters->Users->UserIdentifier->Email->MatchType
+            $xmlAsElement->Parameters->User->Filters->Users->UserIdentifier->Email->MatchType
         );
         self::assertEquals(
             $email->getValue(),
-            $xmlAsElement->parameters->User->Filters->Users->UserIdentifier->Email->Value
+            $xmlAsElement->Parameters->User->Filters->Users->UserIdentifier->Email->Value
         );
         self::assertContains('EmployeeID', $userIdentifiers);
         self::assertEquals(
             $employeeId->getMatchType(),
-            $xmlAsElement->parameters->User->Filters->Users->UserIdentifier->EmployeeID->MatchType
+            $xmlAsElement->Parameters->User->Filters->Users->UserIdentifier->EmployeeID->MatchType
         );
         self::assertEquals(
             $employeeId->getValue(),
-            $xmlAsElement->parameters->User->Filters->Users->UserIdentifier->EmployeeID->Value
+            $xmlAsElement->Parameters->User->Filters->Users->UserIdentifier->EmployeeID->Value
         );
         self::assertContains('Name', $userIdentifiers);
         self::assertEquals(
             $name->getMatchType(),
-            $xmlAsElement->parameters->User->Filters->Users->UserIdentifier->Name->MatchType
+            $xmlAsElement->Parameters->User->Filters->Users->UserIdentifier->Name->MatchType
         );
         self::assertEquals(
             $name->getValue(),
-            $xmlAsElement->parameters->User->Filters->Users->UserIdentifier->Name->Value
+            $xmlAsElement->Parameters->User->Filters->Users->UserIdentifier->Name->Value
         );
         self::assertEquals(
             $groupName,
-            $xmlAsElement->parameters->User->Filters->GroupName
+            $xmlAsElement->Parameters->User->Filters->GroupName
         );
         self::assertEquals(
             $userStatus,
-            $xmlAsElement->parameters->User->Filters->UserStatus
+            $xmlAsElement->Parameters->User->Filters->UserStatus
         );
         $createdDateTag = [];
-        foreach ($xmlAsElement->parameters->User->Filters->CreatedDate->children() as $date) {
+        foreach ($xmlAsElement->Parameters->User->Filters->CreatedDate->children() as $date) {
             $createdDateTag[] = $date->getName();
         }
         self::assertCount(2, $createdDateTag);
@@ -330,14 +330,14 @@ class ListUsersQueryTest extends TestCase {
         self::assertContains('CreatedDateTo', $createdDateTag);
         self::assertEquals(
             $createdDate->getDateFrom()->format('d/m/Y'),
-            $xmlAsElement->parameters->User->Filters->CreatedDate->CreatedDateFrom
+            $xmlAsElement->Parameters->User->Filters->CreatedDate->CreatedDateFrom
         );
         self::assertEquals(
             $createdDate->getDateTo()->format('d/m/Y'),
-            $xmlAsElement->parameters->User->Filters->CreatedDate->CreatedDateTo
+            $xmlAsElement->Parameters->User->Filters->CreatedDate->CreatedDateTo
         );
         $modifiedDateTag = [];
-        foreach ($xmlAsElement->parameters->User->Filters->ModifiedDate->children() as $date) {
+        foreach ($xmlAsElement->Parameters->User->Filters->ModifiedDate->children() as $date) {
             $modifiedDateTag[] = $date->getName();
         };
         self::assertCount(2, $modifiedDateTag);
@@ -345,20 +345,20 @@ class ListUsersQueryTest extends TestCase {
         self::assertContains('ModifiedDateTo', $modifiedDateTag);
         self::assertEquals(
             $modifiedDate->getDateFrom()->format('d/m/Y'),
-            $xmlAsElement->parameters->User->Filters->ModifiedDate->ModifiedDateFrom
+            $xmlAsElement->Parameters->User->Filters->ModifiedDate->ModifiedDateFrom
         );
         self::assertEquals(
             $modifiedDate->getDateTo()->format('d/m/Y'),
-            $xmlAsElement->parameters->User->Filters->ModifiedDate->ModifiedDateTo
+            $xmlAsElement->Parameters->User->Filters->ModifiedDate->ModifiedDateTo
         );
         $teamName = [];
-        foreach ($xmlAsElement->parameters->User->Filters->Teams->children() as $team) {
+        foreach ($xmlAsElement->Parameters->User->Filters->Teams->children() as $team) {
             $teamName[] = $team->getName();
         }
         self::assertCount(2, $teamName);
         self::assertContains('TeamName', $teamName);
         $teamNames = [];
-        foreach ($xmlAsElement->parameters->User->Filters->Teams->TeamName as $team) {
+        foreach ($xmlAsElement->Parameters->User->Filters->Teams->TeamName as $team) {
             $teamNames[] = $team;
         }
         self::assertEquals($team1, $teamNames[0]);
@@ -389,40 +389,40 @@ class ListUsersQueryTest extends TestCase {
         self::assertEquals($accountApi, $xmlAsElement->AccountAPI);
         self::assertContains('UserAPI', $elements);
         self::assertEquals($userApi, $xmlAsElement->UserAPI);
-        self::assertContains('method', $elements);
-        self::assertEquals('listUsers', $xmlAsElement->method);
-        self::assertContains('parameters', $elements);
+        self::assertContains('Method', $elements);
+        self::assertEquals('listUsers', $xmlAsElement->Method);
+        self::assertContains('Parameters', $elements);
         $parameters = [];
-        foreach ($xmlAsElement->parameters->children() as $parameter) {
+        foreach ($xmlAsElement->Parameters->children() as $parameter) {
             $parameters[] = $parameter->getName();
         }
         self::assertCount(1, $parameters);
         self::assertContains('User', $parameters);
         $userInfo = [];
-        foreach($xmlAsElement->parameters->User->children() as $user) {
+        foreach($xmlAsElement->Parameters->User->children() as $user) {
             $userInfo[] = $user->getName();
         }
         self::assertCount(3, $userInfo);
         self::assertContains('Page', $userInfo);
         self::assertEquals(
             $query->getPage(),
-            (int) $xmlAsElement->parameters->User->Page
+            (int) $xmlAsElement->Parameters->User->Page
         );
         self::assertContains('PageSize', $userInfo);
         self::assertEquals(
             $query->getPageSize(),
-            (int) $xmlAsElement->parameters->User->PageSize
+            (int) $xmlAsElement->Parameters->User->PageSize
         );
         self::assertContains('Filters', $userInfo);
         $filters = [];
-        foreach ($xmlAsElement->parameters->User->Filters->children() as $filter) {
+        foreach ($xmlAsElement->Parameters->User->Filters->children() as $filter) {
             $filters[] = $filter->getName();
         }
         self::assertCount(1, $filters);
         self::assertContains('UserStatus', $filters);
         self::assertEquals(
             $query->getUserStatus(),
-            $xmlAsElement->parameters->User->Filters->UserStatus
+            $xmlAsElement->Parameters->User->Filters->UserStatus
         );
     }
 }

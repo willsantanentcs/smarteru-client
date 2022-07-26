@@ -118,8 +118,8 @@ class GetUserQuery extends BaseQuery {
      */
     public function toXml(): string {
         $xml = $this->createBaseXml();
-        $xml->addChild('method', 'getUser');
-        $parameters = $xml->addChild('parameters');
+        $xml->addChild('Method', 'getUser');
+        $parameters = $xml->addChild('Parameters');
         $user = $parameters->addChild('User');
         if ($this->getId() !== null) {
             $user->addChild('ID', $this->getId());

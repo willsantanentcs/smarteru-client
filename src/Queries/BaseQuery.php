@@ -77,6 +77,8 @@ abstract class BaseQuery {
      * all queries.
      *
      * @return SimpleXMLElement The base XML element from which to build the query
+     * @throws MissingValueException if the Account API Key and/or the User API
+     *      Key are not set.
      */
     public function createBaseXml(): SimpleXMLElement {
         if (!isset($this->accountApi)) {

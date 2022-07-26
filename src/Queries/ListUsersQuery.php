@@ -350,8 +350,8 @@ class ListUsersQuery extends BaseQuery {
      */
     public function toXml(): string {
         $xml = $this->createBaseXml();
-        $xml->addChild('method', 'listUsers');
-        $parameters = $xml->addChild('parameters');
+        $xml->addChild('Method', 'listUsers');
+        $parameters = $xml->addChild('Parameters');
         $user = $parameters->addChild('User');
         $user->addChild('Page', (string) $this->getPage());
         if (!empty($this->getPageSize())) {

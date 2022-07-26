@@ -99,7 +99,7 @@ class Client {
         );
 
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
-        $response = $httpClient->request('POST', $POST_URL, ['body' => $xml]);
+        $response = $httpClient->request('POST', $POST_URL, ['package' => $xml]);
         $body = (string) $response->getBody();
         $bodyAsXml = simplexml_load_string($body);
 
@@ -127,7 +127,7 @@ class Client {
     public function getUser(GetUserQuery $query): User {
         $xml = $query->toXml();
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
-        $response = $httpClient->request('POST', $POST_URL, ['body' => $xml]);
+        $response = $httpClient->request('POST', $POST_URL, ['package' => $xml]);
         $body = (string) $response->getBody();
         $bodyAsXml = simplexml_load_string($body);
 
@@ -192,7 +192,7 @@ class Client {
     public function listUsers(ListUserQuery $query): array {
         $xml = $query->toXml();
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
-        $response = $httpClient->request('POST', $POST_URL, ['body' => $xml->asXML()]);
+        $response = $httpClient->request('POST', $POST_URL, ['package' => $xml->asXML()]);
         $body = (string) $response->getBody();
         $bodyAsXml = simplexml_load_string($body);
 
@@ -242,7 +242,7 @@ class Client {
         );
 
         $httpClient = new HttpClient(['base_uri' => $this->POST_URL]);
-        $response = $httpClient->request('POST', $POST_URL, ['body' => $xml->asXML()]);
+        $response = $httpClient->request('POST', $POST_URL, ['package' => $xml->asXML()]);
         $body = (string) $response->getBody();
         $bodyAsXml = simplexml_load_string($body);
 
