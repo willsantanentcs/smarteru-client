@@ -71,15 +71,15 @@ class ListUsersQuery extends BaseQuery {
 
     /**
      * This is the name of a group. Only users that have been assigned to the
-     * provided group will be returned. 
+     * provided group will be returned.
      */
     protected ?string $groupName = null;
 
     /**
      * This is the status of the users to list. Values can be 'Active', 'Inactive',
-     * or 'All'. Default is 'All'. 
+     * or 'All'. Default is 'All'.
      */
-     protected string $userStatus = self::STATUS_ALL;
+    protected string $userStatus = self::STATUS_ALL;
 
     /**
      * The date range when the user's account was created. The dates should be

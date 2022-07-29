@@ -18,7 +18,6 @@ use SimpleXMLElement;
 use CBS\SmarterU\Exceptions\MissingValueException;
 use CBS\SmarterU\Queries\BaseQuery;
 
-
 /**
  * Represents a getUser query made to the SmarterU API.
  */
@@ -123,14 +122,11 @@ class GetUserQuery extends BaseQuery {
         $user = $parameters->addChild('User');
         if ($this->getId() !== null) {
             $user->addChild('ID', $this->getId());
-        }
-        else if ($this->getEmail() !== null) {
+        } else if ($this->getEmail() !== null) {
             $user->addChild('Email', $this->getEmail());
-        }
-        else if ($this->getEmployeeId() !== null) {
+        } else if ($this->getEmployeeId() !== null) {
             $user->addChild('EmployeeID', $this->getEmployeeId());
-        }
-        else {
+        } else {
             throw new MissingValueException(
                 'User identifier must be specified when creating a GetUserQuery.'
             );

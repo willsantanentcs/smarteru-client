@@ -143,7 +143,7 @@ class GetUserQueryTest extends TestCase {
         self::assertEquals('User', $xmlAsElement->Parameters->User->getName());
 
         $users = [];
-        foreach($xmlAsElement->Parameters->User->children() as $user) {
+        foreach ($xmlAsElement->Parameters->User->children() as $user) {
             $users[] = $user->getName();
         }
         self::assertCount(1, $users);
@@ -189,7 +189,7 @@ class GetUserQueryTest extends TestCase {
         self::assertEquals('User', $xmlAsElement->Parameters->User->getName());
 
         $users = [];
-        foreach($xmlAsElement->Parameters->User->children() as $user) {
+        foreach ($xmlAsElement->Parameters->User->children() as $user) {
             $users[] = $user->getName();
         }
         self::assertCount(1, $users);
@@ -235,7 +235,7 @@ class GetUserQueryTest extends TestCase {
         self::assertEquals('User', $xmlAsElement->Parameters->User->getName());
 
         $users = [];
-        foreach($xmlAsElement->Parameters->User->children() as $user) {
+        foreach ($xmlAsElement->Parameters->User->children() as $user) {
             $users[] = $user->getName();
         }
         self::assertCount(1, $users);

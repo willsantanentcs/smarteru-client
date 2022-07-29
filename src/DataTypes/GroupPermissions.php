@@ -103,5 +103,4 @@ class GroupPermissions {
         $this->permissions = $permissions;
         return $this;
     }
-
 }

@@ -515,9 +515,8 @@ class User {
      * Get of any users they are responsible for.
      *
      * @return  bool
-     */ 
-    public function getSupervisorNotifications()
-    {
+     */
+    public function getSupervisorNotifications() {
         return $this->supervisorNotifications;
     }
 
@@ -527,9 +526,8 @@ class User {
      * @param  bool  $supervisorNotifications  of any users they are responsible for.
      *
      * @return  self
-     */ 
-    public function setSupervisorNotifications(bool $supervisorNotifications)
-    {
+     */
+    public function setSupervisorNotifications(bool $supervisorNotifications) {
         $this->supervisorNotifications = $supervisorNotifications;
 
         return $this;
@@ -539,9 +537,8 @@ class User {
      * Get pending or outstanding courses in SmarterU.
      *
      * @return  bool
-     */ 
-    public function getLearnerNotifications()
-    {
+     */
+    public function getLearnerNotifications() {
         return $this->learnerNotifications;
     }
 
@@ -551,9 +548,8 @@ class User {
      * @param  bool  $learnerNotifications  pending or outstanding courses in SmarterU.
      *
      * @return  self
-     */ 
-    public function setLearnerNotifications(bool $learnerNotifications)
-    {
+     */
+    public function setLearnerNotifications(bool $learnerNotifications) {
         $this->learnerNotifications = $learnerNotifications;
 
         return $this;
@@ -1208,7 +1204,7 @@ class User {
             $profile->addChild('Fax', $this->getFax());
         }
         if (!empty($this->getWebsite())) {
-            $profile->addChild('Website',$this->getWebsite());
+            $profile->addChild('Website', $this->getWebsite());
         }
         if (!empty($this->getAddress1())) {
             $profile->addChild('Address1', $this->getAddress1());
@@ -1241,7 +1237,7 @@ class User {
             $profile->addChild('HomeGroup', $this->getHomeGroup());
         }
         $groups = $userTag->addChild('Groups');
-        foreach($this->getGroups() as $group) {
+        foreach ($this->getGroups() as $group) {
             $groupTag = $groups->addChild('Group');
             if (!empty($group->getGroupName())) {
                 $groupTag->addChild('GroupName', $group->getGroupName());
@@ -1249,7 +1245,7 @@ class User {
             if (!empty($group->getGroupId())) {
                 $groupTag->addChild('GroupID', $group->getGroupId());
             }
-            foreach($group->getPermissions() as $permission){
+            foreach ($group->getPermissions() as $permission) {
                 $permissionTag = $groupTag->addChild('Permission');
                 $permissionTag->addChild('Action', $permission->getAction());
                 $permissionTag->addChild('Code', $permission->getCode());

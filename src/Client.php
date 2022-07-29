@@ -146,8 +146,7 @@ class Client {
             $response = $this
                 ->getHttpClient()
                 ->request('POST', self::POST_URL, ['package' => $xml]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new HttpException($e->getMessage());
         }
         $body = (string) $response->getBody();
@@ -227,8 +226,7 @@ class Client {
             $response = $this
                 ->getHttpClient()
                 ->request('POST', self::POST_URL, ['package' => $xml]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new HttpException($e->getMessage());
         }
 
@@ -356,8 +354,7 @@ class Client {
             $response = $this
                 ->getHttpClient()
                 ->request('POST', self::POST_URL, ['package' => $xml]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new HttpException($e->getMessage());
         }
         $body = (string) $response->getBody();
@@ -451,8 +448,7 @@ class Client {
             $response = $this
                 ->getHttpClient()
                 ->request('POST', self::POST_URL, ['package' => $xml]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new HttpException($e->getMessage());
         }
         $body = (string) $response->getBody();
