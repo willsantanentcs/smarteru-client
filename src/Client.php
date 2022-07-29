@@ -382,22 +382,28 @@ class Client {
     public function updateUser(User $user) {
         $xml = $user->toSimpleXml(
             $this->getAccountApi(),
-            $this->getUserApi(), 'UpdateUser'
+            $this->getUserApi(),
+            'updateUser'
         );
 
         if (empty($this->getHttpClient())) {
-            $this->setHttpClient(new HttpClient(['base_uri' => $this->POST_URL]));
+            $this->setHttpClient(new HttpClient(['base_uri' => self::POST_URL]));
         }
 
-        $response = $this->getHttpClient()->request('POST', $POST_URL, ['package' => $xml->asXML()]);
+        try {
+            $response = $this->getHttpClient()->request('POST', self::POST_URL, ['package' => $xml]);
+        }
+        catch (\Exception $e) {
+            throw new HttpException($e->getMessage());
+        }
         $body = (string) $response->getBody();
         $bodyAsXml = simplexml_load_string($body);
 
-        $result = $bodyAsXml->Success;
+        $result = (string) $bodyAsXml->Result;
 
         $errorMessages = [];
         $errors = $bodyAsXml->Errors;
-        if (count($errors) !== 0) {
+        if ($errors->count() !== 0) {
             $errorMessages = $this->readErrors($errors);
         }
 
@@ -405,21 +411,27 @@ class Client {
             $errorsAsString = '';
             foreach ($errorMessages as $id => $message) {
                 $errorsAsString .= $id;
-                $errorsAsString .= ': ';
+                $errorsAsString .= ": ";
                 $errorsAsString .= $message;
-                $errorsAsString .= '\n';
+                $errorsAsString .= ", ";
             }
             throw new SmarterUException($errorsAsString);
         }
 
-        $email = $bodyAsXml->Info->Email;
-        $employeeId = $bodyAsXml->Info->EmployeeID;
+        $email = (string) $bodyAsXml->Info->Email;
+        $employeeId = (string) $bodyAsXml->Info->EmployeeID;
 
-        $results = [
+        $userAsArray = [
             'Email' => $email,
             'EmployeeID' => $employeeId
         ];
-        return [$results, $errorMessages];
+
+        $result = [
+            'Response' => $userAsArray,
+            'Errors' => $errorMessages
+        ];
+
+        return $result;
     }
 
     /**
