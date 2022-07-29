@@ -377,7 +377,7 @@ class ClientTest extends TestCase {
         self::assertCount(22, $profileTag);
         self::assertContains('Supervisors', $profileTag);
         $supervisors = $packageAsXml->Parameters->User->Profile->Supervisors->asXML();
-        $supervisor1 = 
+        $supervisor1 =
             '<Supervisors><Supervisor>'
             . $this->user1->getSupervisors()[0]
             . '</Supervisor>';
@@ -2309,7 +2309,8 @@ class ClientTest extends TestCase {
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
         $user->addChild(
-            'Name', $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+            'Name',
+            $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
         );
         $user->addChild('Status', $this->user1->getStatus());
         $user->addChild('Title', $this->user1->getTitle());

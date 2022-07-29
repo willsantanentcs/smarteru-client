@@ -1210,7 +1210,7 @@ class User {
             $profile->addChild('Address1', $this->getAddress1());
         }
         if (!empty($this->getAddress2())) {
-            $profile->addChild('Address2',$this->getAddress2());
+            $profile->addChild('Address2', $this->getAddress2());
         }
         if (!empty($this->getCity())) {
             $profile->addChild('City', $this->getCity());
