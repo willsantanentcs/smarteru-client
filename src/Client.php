@@ -118,11 +118,16 @@ class Client {
      * Make a CreateUser query to the SmarterU API.
      *
      * @param User $user the user to create
-     * @return array A 2-dimensional array containing one array that represents
-     *      the User's information as returned by the SmarterU API, and one
-     *      array that contains any error messages that may have been returned.
-     * @throws MissingValueException if the Account API Key and/or the User API
-     *      Key are not set.
+     * @return array An array of [$result, $errors] where $result is an array
+     *      of any information returned by the SmarterU API and $errors is an
+     *      array of any error messages returned by the SmarterU API.
+     * @throws MissingValueException If the Account API Key and/or the User
+     *      API Key are unset.
+     * @throws HttpException If the HTTP response includes a status code
+     *      indicating that an HTTP error has prevented the request from
+     *      being made.
+     * @throws SmarterUException If the response from the SmarterU API
+     *      reports a fatal error that prevents the request from executing.
      */
     public function createUser(User $user) {
         $xml = $user->toSimpleXml(
@@ -132,11 +137,15 @@ class Client {
         );
 
         if (empty($this->getHttpClient())) {
-            $this->setHttpClient(new HttpClient(['base_uri' => self::POST_URL]));
+            $this->setHttpClient(new HttpClient([
+                'base_uri' => self::POST_URL
+            ]));
         }
 
         try {
-            $response = $this->getHttpClient()->request('POST', self::POST_URL, ['package' => $xml]);
+            $response = $this
+                ->getHttpClient()
+                ->request('POST', self::POST_URL, ['package' => $xml]);
         }
         catch (\Exception $e) {
             throw new HttpException($e->getMessage());
@@ -183,11 +192,22 @@ class Client {
      * Make a GetUser query to the SmarterU API.
      *
      * @param GetUserQuery $query The query representing the User to return
-     * @return array An array representation of the query results and any
-     *      errors that may have been returned.
+     * @return array An array of [$result, $errors] where $result is an array
+     *      of any information returned by the SmarterU API and $errors is an
+     *      array of any error messages returned by the SmarterU API.
+     * @throws MissingValueException If the Account API Key and/or the User
+     *      API Key are unset in both this instance of the Client and in the
+     *      query passed in as a parameter.
+     * @throws HttpException If the HTTP response includes a status code
+     *      indicating that an HTTP error has prevented the request from
+     *      being made.
+     * @throws SmarterUException If the response from the SmarterU API
+     *      reports a fatal error that prevents the request from executing.
      */
     public function getUser(GetUserQuery $query): array {
         // If the API keys are not already set in the query, pass them in.
+        // If they are not set in this instance of the Client or in the query,
+        // an exception will be thrown.
         if (empty($query->getAccountApi())) {
             $query->setAccountApi($this->getAccountApi());
         }
@@ -198,11 +218,15 @@ class Client {
         $xml = $query->toXml();
 
         if (empty($this->getHttpClient())) {
-            $this->setHttpClient(new HttpClient(['base_uri' => self::POST_URL]));
+            $this->setHttpClient(new HttpClient([
+                'base_uri' => self::POST_URL
+            ]));
         }
 
         try {
-            $response = $this->getHttpClient()->request('POST', self::POST_URL, ['package' => $xml]);
+            $response = $this
+                ->getHttpClient()
+                ->request('POST', self::POST_URL, ['package' => $xml]);
         }
         catch (\Exception $e) {
             throw new HttpException($e->getMessage());
@@ -234,7 +258,7 @@ class Client {
 
         /**
          * Not casting this to an array causes the teams to be placed in a
-         * SimpleXMLElement where the array indices are the node names, which
+         * SimpleXMLElement of <[arrayIndex]> teamName </[arrayIndex]>, which
          * renders the team names inaccessible because [#] is invalid syntax
          * for a node name.
          */
@@ -299,7 +323,17 @@ class Client {
      * Make a ListUsers query to the SmarterU API.
      *
      * @param ListUsersQuery $query The query representing the Users to return
-     * @return User[] All Users that match the query criteria
+     * @return array An array of [$result, $errors] where $result is an array
+     *      of any information returned by the SmarterU API and $errors is an
+     *      array of any error messages returned by the SmarterU API.
+     * @throws MissingValueException If the Account API Key and/or the User
+     *      API Key are unset in both this instance of the Client and in the
+     *      query passed in as a parameter.
+     * @throws HttpException If the HTTP response includes a status code
+     *      indicating that an HTTP error has prevented the request from
+     *      being made.
+     * @throws SmarterUException If the response from the SmarterU API
+     *      reports a fatal error that prevents the request from executing.
      */
     public function listUsers(ListUsersQuery $query): array {
         // If the API keys are not already set in the query, pass them in.
@@ -313,11 +347,15 @@ class Client {
         $xml = $query->toXml();
 
         if (empty($this->getHttpClient())) {
-            $this->setHttpClient(new HttpClient(['base_uri' => self::POST_URL]));
+            $this->setHttpClient(new HttpClient([
+                'base_uri' => self::POST_URL
+            ]));
         }
 
         try {
-            $response = $this->getHttpClient()->request('POST', self::POST_URL, ['package' => $xml]);
+            $response = $this
+                ->getHttpClient()
+                ->request('POST', self::POST_URL, ['package' => $xml]);
         }
         catch (\Exception $e) {
             throw new HttpException($e->getMessage());
@@ -348,6 +386,13 @@ class Client {
         foreach ($bodyAsXml->Info->Users->children() as $user) {
             $currentUser = [];
             $teams = [];
+
+            /**
+             * Not casting this to an array causes the teams to be placed in a
+             * SimpleXMLElement of <[arrayIndex]> teamName </[arrayIndex]>,
+             * which renders the team names inaccessible because [#] is invalid
+             * syntax for a node name.
+             */
             foreach ((array) $user->Teams->Team as $team) {
                 $teams[] = $team;
             }
@@ -378,6 +423,16 @@ class Client {
      * Make an UpdateUser query to the SmarterU API.
      *
      * @param User $user The User to update
+     * @return array An array of [$result, $errors] where $result is an array
+     *      of any information returned by the SmarterU API and $errors is an
+     *      array of any error messages returned by the SmarterU API.
+     * @throws MissingValueException If the Account API Key and/or the User
+     *      API Key are unset.
+     * @throws HttpException If the HTTP response includes a status code
+     *      indicating that an HTTP error has prevented the request from
+     *      being made.
+     * @throws SmarterUException If the response from the SmarterU API
+     *      reports a fatal error that prevents the request from executing.
      */
     public function updateUser(User $user) {
         $xml = $user->toSimpleXml(
@@ -387,11 +442,15 @@ class Client {
         );
 
         if (empty($this->getHttpClient())) {
-            $this->setHttpClient(new HttpClient(['base_uri' => self::POST_URL]));
+            $this->setHttpClient(new HttpClient([
+                'base_uri' => self::POST_URL
+            ]));
         }
 
         try {
-            $response = $this->getHttpClient()->request('POST', self::POST_URL, ['package' => $xml]);
+            $response = $this
+                ->getHttpClient()
+                ->request('POST', self::POST_URL, ['package' => $xml]);
         }
         catch (\Exception $e) {
             throw new HttpException($e->getMessage());

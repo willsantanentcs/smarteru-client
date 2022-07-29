@@ -206,7 +206,9 @@ class ClientTest extends TestCase {
         $client = (new Client());
         
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('Account API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'Account API key must be set before creating a query.'
+        );
         $client->createUser($this->user1);
     }
 
@@ -220,7 +222,9 @@ class ClientTest extends TestCase {
             ->setAccountApi($accountApi);
 
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('User API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'User API key must be set before creating a query.'
+        );
         $client->createUser($this->user1);
     }
 
@@ -373,8 +377,14 @@ class ClientTest extends TestCase {
         self::assertCount(22, $profileTag);
         self::assertContains('Supervisors', $profileTag);
         $supervisors = $packageAsXml->Parameters->User->Profile->Supervisors->asXML();
-        $supervisor1 = '<Supervisors><Supervisor>' . $this->user1->getSupervisors()[0] . '</Supervisor>';
-        $supervisor2 = '<Supervisor>' . $this->user1->getSupervisors()[1] . '</Supervisor></Supervisors>';
+        $supervisor1 = 
+            '<Supervisors><Supervisor>'
+            . $this->user1->getSupervisors()[0]
+            . '</Supervisor>';
+        $supervisor2 =
+            '<Supervisor>'
+            . $this->user1->getSupervisors()[1]
+            . '</Supervisor></Supervisors>';
         self::assertStringContainsString($supervisor1, $supervisors);
         self::assertStringContainsString($supervisor2, $supervisors);
         self::assertContains('Organization', $profileTag);
@@ -576,8 +586,14 @@ class ClientTest extends TestCase {
         );
 
         // Ensure that the <Venues> and <Wages> tags are empty.
-        self::assertCount(0, $packageAsXml->Parameters->User->Venues->children());
-        self::assertCount(0, $packageAsXml->Parameters->User->Wages->Children());
+        self::assertCount(
+            0,
+            $packageAsXml->Parameters->User->Venues->children()
+        );
+        self::assertCount(
+            0,
+            $packageAsXml->Parameters->User->Wages->Children()
+        );
     }
 
     /**
@@ -711,7 +727,10 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $response);
         self::assertEquals($response['Email'], $this->user1->getEmail());
         self::assertArrayHasKey('EmployeeID', $response);
-        self::assertEquals($response['EmployeeID'], $this->user1->getEmployeeId());
+        self::assertEquals(
+            $response['EmployeeID'],
+            $this->user1->getEmployeeId()
+        );
 
         self::assertIsArray($errors);
         self::assertCount(1, $errors);
@@ -767,7 +786,10 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $response);
         self::assertEquals($response['Email'], $this->user1->getEmail());
         self::assertArrayHasKey('EmployeeID', $response);
-        self::assertEquals($response['EmployeeID'], $this->user1->getEmployeeId());
+        self::assertEquals(
+            $response['EmployeeID'],
+            $this->user1->getEmployeeId()
+        );
 
         self::assertIsArray($errors);
         self::assertCount(0, $errors);
@@ -784,7 +806,9 @@ class ClientTest extends TestCase {
         $client = (new Client());
         
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('Account API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'Account API key must be set before creating a query.'
+        );
         $client->getUser($query);
     }
 
@@ -800,7 +824,9 @@ class ClientTest extends TestCase {
             ->setAccountApi('account');
         
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('User API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'User API key must be set before creating a query.'
+        );
         $client->getUser($query);
     }
 
@@ -844,9 +870,15 @@ class ClientTest extends TestCase {
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
         $user->addChild('Language', $this->user1->getLanguage());
-        $user->addChild('AllowFeedback', (string) $this->user1->getAllowFeedback());
+        $user->addChild(
+            'AllowFeedback',
+            (string) $this->user1->getAllowFeedback()
+        );
         $user->addChild('Status', $this->user1->getStatus());
-        $user->addChild('AuthenticationType', $this->user1->getAuthenticationType());
+        $user->addChild(
+            'AuthenticationType',
+            $this->user1->getAuthenticationType()
+        );
         $user->addChild('Timezone', $this->user1->getTimezone());
         $user->addChild('AlternateEmail', $this->user1->getAlternateEmail());
         $user->addChild('HomeGroup', $this->user1->getHomeGroup());
@@ -866,8 +898,14 @@ class ClientTest extends TestCase {
         $user->addChild('PostalCode', $this->user1->getPostalCode());
         $user->addChild('Province', $this->user1->getProvince());
         $user->addChild('Country', $this->user1->getCountry());
-        $user->addChild('SendWeeklyTaskReminder', (string) $this->user1->getLearnerNotifications());
-        $user->addChild('SendWeeklyProgressSummary', (string) $this->user1->getSupervisorNotifications());
+        $user->addChild(
+            'SendWeeklyTaskReminder',
+            (string) $this->user1->getLearnerNotifications()
+        );
+        $user->addChild(
+            'SendWeeklyProgressSummary',
+            (string) $this->user1->getSupervisorNotifications()
+        );
         $teams = $user->addChild('Teams');
         foreach ($this->user1->getTeams() as $team) {
             $teams->addChild('Team', $team);
@@ -876,7 +914,10 @@ class ClientTest extends TestCase {
         $user->addChild('CustomFields');
         $user->addChild('Venues');
         $user->addChild('Wages');
-        $user->addChild('ReceiveNotifications', (string) $this->user1->getReceiveNotifications());
+        $user->addChild(
+            'ReceiveNotifications',
+            (string) $this->user1->getReceiveNotifications()
+        );
         $errors = $xml->addChild('Errors');
         $error = $errors->addChild('Error');
         $error->addChild('ErrorID', 'Error 1');
@@ -928,7 +969,10 @@ class ClientTest extends TestCase {
         }
         self::assertCount(1, $userIdentifier);
         self::assertContains('ID', $userIdentifier);
-        self::assertEquals($query->getId(), $packageAsXml->Parameters->User->ID);
+        self::assertEquals(
+            $query->getId(),
+            $packageAsXml->Parameters->User->ID
+        );
     }
 
     /**
@@ -971,9 +1015,15 @@ class ClientTest extends TestCase {
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
         $user->addChild('Language', $this->user1->getLanguage());
-        $user->addChild('AllowFeedback', (string) $this->user1->getAllowFeedback());
+        $user->addChild(
+            'AllowFeedback',
+            (string) $this->user1->getAllowFeedback()
+        );
         $user->addChild('Status', $this->user1->getStatus());
-        $user->addChild('AuthenticationType', $this->user1->getAuthenticationType());
+        $user->addChild(
+            'AuthenticationType',
+            $this->user1->getAuthenticationType()
+        );
         $user->addChild('Timezone', $this->user1->getTimezone());
         $user->addChild('AlternateEmail', $this->user1->getAlternateEmail());
         $user->addChild('HomeGroup', $this->user1->getHomeGroup());
@@ -993,8 +1043,14 @@ class ClientTest extends TestCase {
         $user->addChild('PostalCode', $this->user1->getPostalCode());
         $user->addChild('Province', $this->user1->getProvince());
         $user->addChild('Country', $this->user1->getCountry());
-        $user->addChild('SendWeeklyTaskReminder', (string) $this->user1->getLearnerNotifications());
-        $user->addChild('SendWeeklyProgressSummary', (string) $this->user1->getSupervisorNotifications());
+        $user->addChild(
+            'SendWeeklyTaskReminder',
+            (string) $this->user1->getLearnerNotifications()
+        );
+        $user->addChild(
+            'SendWeeklyProgressSummary',
+            (string) $this->user1->getSupervisorNotifications()
+        );
         $teams = $user->addChild('Teams');
         foreach ($this->user1->getTeams() as $team) {
             $teams->addChild('Team', $team);
@@ -1003,7 +1059,10 @@ class ClientTest extends TestCase {
         $user->addChild('CustomFields');
         $user->addChild('Venues');
         $user->addChild('Wages');
-        $user->addChild('ReceiveNotifications', (string) $this->user1->getReceiveNotifications());
+        $user->addChild(
+            'ReceiveNotifications',
+            (string) $this->user1->getReceiveNotifications()
+        );
         $errors = $xml->addChild('Errors');
         $error = $errors->addChild('Error');
         $error->addChild('ErrorID', 'Error 1');
@@ -1055,7 +1114,10 @@ class ClientTest extends TestCase {
         }
         self::assertCount(1, $userIdentifier);
         self::assertContains('Email', $userIdentifier);
-        self::assertEquals($query->getEmail(), $packageAsXml->Parameters->User->Email);
+        self::assertEquals(
+            $query->getEmail(),
+            $packageAsXml->Parameters->User->Email
+        );
     }
 
     /**
@@ -1098,9 +1160,15 @@ class ClientTest extends TestCase {
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
         $user->addChild('Language', $this->user1->getLanguage());
-        $user->addChild('AllowFeedback', (string) $this->user1->getAllowFeedback());
+        $user->addChild(
+            'AllowFeedback',
+            (string) $this->user1->getAllowFeedback()
+        );
         $user->addChild('Status', $this->user1->getStatus());
-        $user->addChild('AuthenticationType', $this->user1->getAuthenticationType());
+        $user->addChild(
+            'AuthenticationType',
+            $this->user1->getAuthenticationType()
+        );
         $user->addChild('Timezone', $this->user1->getTimezone());
         $user->addChild('AlternateEmail', $this->user1->getAlternateEmail());
         $user->addChild('HomeGroup', $this->user1->getHomeGroup());
@@ -1120,8 +1188,14 @@ class ClientTest extends TestCase {
         $user->addChild('PostalCode', $this->user1->getPostalCode());
         $user->addChild('Province', $this->user1->getProvince());
         $user->addChild('Country', $this->user1->getCountry());
-        $user->addChild('SendWeeklyTaskReminder', (string) $this->user1->getLearnerNotifications());
-        $user->addChild('SendWeeklyProgressSummary', (string) $this->user1->getSupervisorNotifications());
+        $user->addChild(
+            'SendWeeklyTaskReminder',
+            (string) $this->user1->getLearnerNotifications()
+        );
+        $user->addChild(
+            'SendWeeklyProgressSummary',
+            (string) $this->user1->getSupervisorNotifications()
+        );
         $teams = $user->addChild('Teams');
         foreach ($this->user1->getTeams() as $team) {
             $teams->addChild('Team', $team);
@@ -1130,7 +1204,10 @@ class ClientTest extends TestCase {
         $user->addChild('CustomFields');
         $user->addChild('Venues');
         $user->addChild('Wages');
-        $user->addChild('ReceiveNotifications', (string) $this->user1->getReceiveNotifications());
+        $user->addChild(
+            'ReceiveNotifications',
+            (string) $this->user1->getReceiveNotifications()
+        );
         $errors = $xml->addChild('Errors');
         $error = $errors->addChild('Error');
         $error->addChild('ErrorID', 'Error 1');
@@ -1182,7 +1259,10 @@ class ClientTest extends TestCase {
         }
         self::assertCount(1, $userIdentifier);
         self::assertContains('EmployeeID', $userIdentifier);
-        self::assertEquals($query->getEmployeeId(), $packageAsXml->Parameters->User->EmployeeID);
+        self::assertEquals(
+            $query->getEmployeeId(),
+            $packageAsXml->Parameters->User->EmployeeID
+        );
     }
 
     /**
@@ -1303,9 +1383,15 @@ class ClientTest extends TestCase {
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
         $user->addChild('Language', $this->user1->getLanguage());
-        $user->addChild('AllowFeedback', (string) $this->user1->getAllowFeedback());
+        $user->addChild(
+            'AllowFeedback',
+            (string) $this->user1->getAllowFeedback()
+        );
         $user->addChild('Status', $this->user1->getStatus());
-        $user->addChild('AuthenticationType', $this->user1->getAuthenticationType());
+        $user->addChild(
+            'AuthenticationType',
+            $this->user1->getAuthenticationType()
+        );
         $user->addChild('Timezone', $this->user1->getTimezone());
         $user->addChild('AlternateEmail', $this->user1->getAlternateEmail());
         $user->addChild('HomeGroup', $this->user1->getHomeGroup());
@@ -1325,8 +1411,14 @@ class ClientTest extends TestCase {
         $user->addChild('PostalCode', $this->user1->getPostalCode());
         $user->addChild('Province', $this->user1->getProvince());
         $user->addChild('Country', $this->user1->getCountry());
-        $user->addChild('SendWeeklyTaskReminder', (string) $this->user1->getLearnerNotifications());
-        $user->addChild('SendWeeklyProgressSummary', (string) $this->user1->getSupervisorNotifications());
+        $user->addChild(
+            'SendWeeklyTaskReminder',
+            (string) $this->user1->getLearnerNotifications()
+        );
+        $user->addChild(
+            'SendWeeklyProgressSummary',
+            (string) $this->user1->getSupervisorNotifications()
+        );
         $teams = $user->addChild('Teams');
         foreach ($this->user1->getTeams() as $team) {
             $teams->addChild('Team', $team);
@@ -1335,7 +1427,10 @@ class ClientTest extends TestCase {
         $user->addChild('CustomFields');
         $user->addChild('Venues');
         $user->addChild('Wages');
-        $user->addChild('ReceiveNotifications', (string) $this->user1->getReceiveNotifications());
+        $user->addChild(
+            'ReceiveNotifications',
+            (string) $this->user1->getReceiveNotifications()
+        );
         $errors = $xml->addChild('Errors');
         $error = $errors->addChild('Error');
         $error->addChild('ErrorID', 'Error 1');
@@ -1368,31 +1463,55 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $response);
         self::assertEquals($this->user1->getEmail(), $response['Email']);
         self::assertArrayHasKey('EmployeeID', $response);
-        self::assertEquals($this->user1->getEmployeeId(), $response['EmployeeID']);
+        self::assertEquals(
+            $this->user1->getEmployeeId(),
+            $response['EmployeeID']
+        );
         self::assertArrayHasKey('CreatedDate', $response);
         self::assertEquals($createdDate, $response['CreatedDate']);
         self::assertArrayHasKey('ModifiedDate', $response);
         self::assertEquals($modifiedDate, $response['ModifiedDate']);
         self::assertArrayHasKey('GivenName', $response);
-        self::assertEquals($this->user1->getGivenName(), $response['GivenName']);
+        self::assertEquals(
+            $this->user1->getGivenName(),
+            $response['GivenName']
+        );
         self::assertArrayHasKey('Surname', $response);
         self::assertEquals($this->user1->getSurname(), $response['Surname']);
         self::assertArrayHasKey('Language', $response);
         self::assertEquals($this->user1->getLanguage(), $response['Language']);
         self::assertArrayHasKey('AllowFeedback', $response);
-        self::assertEquals((string) $this->user1->getAllowFeedback(), $response['AllowFeedback']);
+        self::assertEquals(
+            (string) $this->user1->getAllowFeedback(),
+            $response['AllowFeedback']
+        );
         self::assertArrayHasKey('Status', $response);
         self::assertEquals($this->user1->getStatus(), $response['Status']);
         self::assertArrayHasKey('AuthenticationType', $response);
-        self::assertEquals($this->user1->getAuthenticationType(), $response['AuthenticationType']);
+        self::assertEquals(
+            $this->user1->getAuthenticationType(),
+            $response['AuthenticationType']
+        );
         self::assertArrayHasKey('Timezone', $response);
-        self::assertEquals($this->user1->getTimezone(), $response['Timezone']);
+        self::assertEquals(
+            $this->user1->getTimezone(),
+            $response['Timezone']
+        );
         self::assertArrayHasKey('AlternateEmail', $response);
-        self::assertEquals($this->user1->getAlternateEmail(), $response['AlternateEmail']);
+        self::assertEquals(
+            $this->user1->getAlternateEmail(),
+            $response['AlternateEmail']
+        );
         self::assertArrayHasKey('HomeGroup', $response);
-        self::assertEquals($this->user1->getHomeGroup(), $response['HomeGroup']);
+        self::assertEquals(
+            $this->user1->getHomeGroup(),
+            $response['HomeGroup']
+        );
         self::assertArrayHasKey('Organization', $response);
-        self::assertEquals($this->user1->getOrganization(), $response['Organization']);
+        self::assertEquals(
+            $this->user1->getOrganization(),
+            $response['Organization']
+        );
         self::assertArrayHasKey('Title', $response);
         self::assertEquals($this->user1->getTitle(), $response['Title']);
         self::assertArrayHasKey('Division', $response);
@@ -1402,15 +1521,30 @@ class ClientTest extends TestCase {
         self::assertCount(0, $response['Supervisors']);
         // TODO implement supervisors. For iteration 1, we can assume it's blank.
         self::assertArrayHasKey('PhonePrimary', $response);
-        self::assertEquals($this->user1->getPhonePrimary(), $response['PhonePrimary']);
+        self::assertEquals(
+            $this->user1->getPhonePrimary(),
+            $response['PhonePrimary']
+        );
         self::assertArrayHasKey('PhoneAlternate', $response);
-        self::assertEquals($this->user1->getPhoneAlternate(), $response['PhoneAlternate']);
+        self::assertEquals(
+            $this->user1->getPhoneAlternate(),
+            $response['PhoneAlternate']
+        );
         self::assertArrayHasKey('PhoneMobile', $response);
-        self::assertEquals($this->user1->getPhoneMobile(), $response['PhoneMobile']);
+        self::assertEquals(
+            $this->user1->getPhoneMobile(),
+            $response['PhoneMobile']
+        );
         self::assertArrayHasKey('SendMailTo', $response);
-        self::assertEquals($this->user1->getSendMailTo(), $response['SendMailTo']);
+        self::assertEquals(
+            $this->user1->getSendMailTo(),
+            $response['SendMailTo']
+        );
         self::assertArrayHasKey('SendEmailTo', $response);
-        self::assertEquals($this->user1->getSendEmailTo(), $response['SendEmailTo']);
+        self::assertEquals(
+            $this->user1->getSendEmailTo(),
+            $response['SendEmailTo']
+        );
         self::assertArrayHasKey('Fax', $response);
         self::assertEquals($this->user1->getFax(), $response['Fax']);
         self::assertArrayHasKey('Address1', $response);
@@ -1420,15 +1554,24 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('City', $response);
         self::assertEquals($this->user1->getCity(), $response['City']);
         self::assertArrayHasKey('PostalCode', $response);
-        self::assertEquals($this->user1->getPostalCode(), $response['PostalCode']);
+        self::assertEquals(
+            $this->user1->getPostalCode(),
+            $response['PostalCode']
+        );
         self::assertArrayHasKey('Province', $response);
         self::assertEquals($this->user1->getProvince(), $response['Province']);
         self::assertArrayHasKey('Country', $response);
         self::assertEquals($this->user1->getCountry(), $response['Country']);
         self::assertArrayHasKey('LearnerNotifications', $response);
-        self::assertEquals((string) $this->user1->getLearnerNotifications(), $response['LearnerNotifications']);
+        self::assertEquals(
+            (string) $this->user1->getLearnerNotifications(),
+            $response['LearnerNotifications']
+        );
         self::assertArrayHasKey('SupervisorNotifications', $response);
-        self::assertEquals((string) $this->user1->getSupervisorNotifications(), $response['SupervisorNotifications']);
+        self::assertEquals(
+            (string) $this->user1->getSupervisorNotifications(),
+            $response['SupervisorNotifications']
+        );
         self::assertArrayHasKey('Teams', $response);
         self::assertIsArray($response['Teams']);
         self::assertCount(count($this->user1->getTeams()), $response['Teams']);
@@ -1487,9 +1630,15 @@ class ClientTest extends TestCase {
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
         $user->addChild('Language', $this->user1->getLanguage());
-        $user->addChild('AllowFeedback', (string) $this->user1->getAllowFeedback());
+        $user->addChild(
+            'AllowFeedback',
+            (string) $this->user1->getAllowFeedback()
+        );
         $user->addChild('Status', $this->user1->getStatus());
-        $user->addChild('AuthenticationType', $this->user1->getAuthenticationType());
+        $user->addChild(
+            'AuthenticationType',
+            $this->user1->getAuthenticationType()
+        );
         $user->addChild('Timezone', $this->user1->getTimezone());
         $user->addChild('AlternateEmail', $this->user1->getAlternateEmail());
         $user->addChild('HomeGroup', $this->user1->getHomeGroup());
@@ -1509,8 +1658,14 @@ class ClientTest extends TestCase {
         $user->addChild('PostalCode', $this->user1->getPostalCode());
         $user->addChild('Province', $this->user1->getProvince());
         $user->addChild('Country', $this->user1->getCountry());
-        $user->addChild('SendWeeklyTaskReminder', (string) $this->user1->getLearnerNotifications());
-        $user->addChild('SendWeeklyProgressSummary', (string) $this->user1->getSupervisorNotifications());
+        $user->addChild(
+            'SendWeeklyTaskReminder',
+            (string) $this->user1->getLearnerNotifications()
+        );
+        $user->addChild(
+            'SendWeeklyProgressSummary',
+            (string) $this->user1->getSupervisorNotifications()
+        );
         $teams = $user->addChild('Teams');
         foreach ($this->user1->getTeams() as $team) {
             $teams->addChild('Team', $team);
@@ -1519,7 +1674,10 @@ class ClientTest extends TestCase {
         $user->addChild('CustomFields');
         $user->addChild('Venues');
         $user->addChild('Wages');
-        $user->addChild('ReceiveNotifications', (string) $this->user1->getReceiveNotifications());
+        $user->addChild(
+            'ReceiveNotifications',
+            (string) $this->user1->getReceiveNotifications()
+        );
         $errors = $xml->addChild('Errors');
         $body = $xml->asXML();
     
@@ -1549,31 +1707,55 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $response);
         self::assertEquals($this->user1->getEmail(), $response['Email']);
         self::assertArrayHasKey('EmployeeID', $response);
-        self::assertEquals($this->user1->getEmployeeId(), $response['EmployeeID']);
+        self::assertEquals(
+            $this->user1->getEmployeeId(),
+            $response['EmployeeID']
+        );
         self::assertArrayHasKey('CreatedDate', $response);
         self::assertEquals($createdDate, $response['CreatedDate']);
         self::assertArrayHasKey('ModifiedDate', $response);
         self::assertEquals($modifiedDate, $response['ModifiedDate']);
         self::assertArrayHasKey('GivenName', $response);
-        self::assertEquals($this->user1->getGivenName(), $response['GivenName']);
+        self::assertEquals(
+            $this->user1->getGivenName(),
+            $response['GivenName']
+        );
         self::assertArrayHasKey('Surname', $response);
         self::assertEquals($this->user1->getSurname(), $response['Surname']);
         self::assertArrayHasKey('Language', $response);
-        self::assertEquals($this->user1->getLanguage(), $response['Language']);
+        self::assertEquals(
+            $this->user1->getLanguage(),
+            $response['Language']
+        );
         self::assertArrayHasKey('AllowFeedback', $response);
-        self::assertEquals((string) $this->user1->getAllowFeedback(), $response['AllowFeedback']);
+        self::assertEquals(
+            (string) $this->user1->getAllowFeedback(),
+            $response['AllowFeedback']
+        );
         self::assertArrayHasKey('Status', $response);
         self::assertEquals($this->user1->getStatus(), $response['Status']);
         self::assertArrayHasKey('AuthenticationType', $response);
-        self::assertEquals($this->user1->getAuthenticationType(), $response['AuthenticationType']);
+        self::assertEquals(
+            $this->user1->getAuthenticationType(),
+            $response['AuthenticationType']
+        );
         self::assertArrayHasKey('Timezone', $response);
         self::assertEquals($this->user1->getTimezone(), $response['Timezone']);
         self::assertArrayHasKey('AlternateEmail', $response);
-        self::assertEquals($this->user1->getAlternateEmail(), $response['AlternateEmail']);
+        self::assertEquals(
+            $this->user1->getAlternateEmail(),
+            $response['AlternateEmail']
+        );
         self::assertArrayHasKey('HomeGroup', $response);
-        self::assertEquals($this->user1->getHomeGroup(), $response['HomeGroup']);
+        self::assertEquals(
+            $this->user1->getHomeGroup(),
+            $response['HomeGroup']
+        );
         self::assertArrayHasKey('Organization', $response);
-        self::assertEquals($this->user1->getOrganization(), $response['Organization']);
+        self::assertEquals(
+            $this->user1->getOrganization(),
+            $response['Organization']
+        );
         self::assertArrayHasKey('Title', $response);
         self::assertEquals($this->user1->getTitle(), $response['Title']);
         self::assertArrayHasKey('Division', $response);
@@ -1583,15 +1765,30 @@ class ClientTest extends TestCase {
         self::assertCount(0, $response['Supervisors']);
         // TODO implement supervisors. For iteration 1, we can assume it's blank.
         self::assertArrayHasKey('PhonePrimary', $response);
-        self::assertEquals($this->user1->getPhonePrimary(), $response['PhonePrimary']);
+        self::assertEquals(
+            $this->user1->getPhonePrimary(),
+            $response['PhonePrimary']
+        );
         self::assertArrayHasKey('PhoneAlternate', $response);
-        self::assertEquals($this->user1->getPhoneAlternate(), $response['PhoneAlternate']);
+        self::assertEquals(
+            $this->user1->getPhoneAlternate(),
+            $response['PhoneAlternate']
+        );
         self::assertArrayHasKey('PhoneMobile', $response);
-        self::assertEquals($this->user1->getPhoneMobile(), $response['PhoneMobile']);
+        self::assertEquals(
+            $this->user1->getPhoneMobile(),
+            $response['PhoneMobile']
+        );
         self::assertArrayHasKey('SendMailTo', $response);
-        self::assertEquals($this->user1->getSendMailTo(), $response['SendMailTo']);
+        self::assertEquals(
+            $this->user1->getSendMailTo(),
+            $response['SendMailTo']
+        );
         self::assertArrayHasKey('SendEmailTo', $response);
-        self::assertEquals($this->user1->getSendEmailTo(), $response['SendEmailTo']);
+        self::assertEquals(
+            $this->user1->getSendEmailTo(),
+            $response['SendEmailTo']
+        );
         self::assertArrayHasKey('Fax', $response);
         self::assertEquals($this->user1->getFax(), $response['Fax']);
         self::assertArrayHasKey('Address1', $response);
@@ -1601,15 +1798,24 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('City', $response);
         self::assertEquals($this->user1->getCity(), $response['City']);
         self::assertArrayHasKey('PostalCode', $response);
-        self::assertEquals($this->user1->getPostalCode(), $response['PostalCode']);
+        self::assertEquals(
+            $this->user1->getPostalCode(),
+            $response['PostalCode']
+        );
         self::assertArrayHasKey('Province', $response);
         self::assertEquals($this->user1->getProvince(), $response['Province']);
         self::assertArrayHasKey('Country', $response);
         self::assertEquals($this->user1->getCountry(), $response['Country']);
         self::assertArrayHasKey('LearnerNotifications', $response);
-        self::assertEquals((string) $this->user1->getLearnerNotifications(), $response['LearnerNotifications']);
+        self::assertEquals(
+            (string) $this->user1->getLearnerNotifications(),
+            $response['LearnerNotifications']
+        );
         self::assertArrayHasKey('SupervisorNotifications', $response);
-        self::assertEquals((string) $this->user1->getSupervisorNotifications(), $response['SupervisorNotifications']);
+        self::assertEquals(
+            (string) $this->user1->getSupervisorNotifications(),
+            $response['SupervisorNotifications']
+        );
         self::assertArrayHasKey('Teams', $response);
         self::assertIsArray($response['Teams']);
         self::assertCount(count($this->user1->getTeams()), $response['Teams']);
@@ -1644,7 +1850,9 @@ class ClientTest extends TestCase {
         $client = (new Client());
         
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('Account API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'Account API key must be set before creating a query.'
+        );
         $client->listUsers($query);
     }
 
@@ -1660,7 +1868,9 @@ class ClientTest extends TestCase {
             ->setAccountApi('account');
         
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('User API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'User API key must be set before creating a query.'
+        );
         $client->listUsers($query);
     }
 
@@ -1679,7 +1889,9 @@ class ClientTest extends TestCase {
             ->setValue($this->user1->getEmployeeId());
         $name = (new MatchTag())
             ->setMatchType('EXACT')
-            ->setValue($this->user1->getGivenName() . ' ' . $this->user1->getSurname());
+            ->setValue(
+                $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+            );
         $now = new DateTime();
         $time1 = new DateTime('2022-07-25');
         $time2 = new DateTime('2022-07-26');
@@ -1736,7 +1948,10 @@ class ClientTest extends TestCase {
         $user->addChild('EmployeeID', $this->user1->getEmployeeId());
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
-        $user->addChild('Name', $this->user1->getGivenName() . ' ' . $this->user1->getSurname());
+        $user->addChild(
+            'Name',
+            $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+        );
         $user->addChild('Status', $this->user1->getStatus());
         $user->addChild('Title', $this->user1->getTitle());
         $user->addChild('Division', $this->user1->getDivision());
@@ -1935,8 +2150,8 @@ class ClientTest extends TestCase {
     }
 
     /**
-     * Test that listUsers() throws an exception when an HTTP error occurs while
-     * attempting to make a request to the SmarterU API.
+     * Test that listUsers() throws an exception when an HTTP error occurs
+     * while attempting to make a request to the SmarterU API.
      */
     public function testListUsersThrowsExceptionWhenHTTPErrorOccurs() {
         $accountApi = 'account';
@@ -2034,7 +2249,9 @@ class ClientTest extends TestCase {
             ->setValue($this->user1->getEmployeeId());
         $name = (new MatchTag())
             ->setMatchType('EXACT')
-            ->setValue($this->user1->getGivenName() . ' ' . $this->user1->getSurname());
+            ->setValue(
+                $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+            );
         $now = new DateTime();
         $time1 = new DateTime('2022-07-25');
         $time2 = new DateTime('2022-07-26');
@@ -2091,7 +2308,9 @@ class ClientTest extends TestCase {
         $user->addChild('EmployeeID', $this->user1->getEmployeeId());
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
-        $user->addChild('Name', $this->user1->getGivenName() . ' ' . $this->user1->getSurname());
+        $user->addChild(
+            'Name', $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+        );
         $user->addChild('Status', $this->user1->getStatus());
         $user->addChild('Title', $this->user1->getTitle());
         $user->addChild('Division', $this->user1->getDivision());
@@ -2186,7 +2405,9 @@ class ClientTest extends TestCase {
             ->setValue($this->user1->getEmployeeId());
         $name = (new MatchTag())
             ->setMatchType('EXACT')
-            ->setValue($this->user1->getGivenName() . ' ' . $this->user1->getSurname());
+            ->setValue(
+                $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+            );
         $now = new DateTime();
         $time1 = new DateTime('2022-07-25');
         $time2 = new DateTime('2022-07-26');
@@ -2243,7 +2464,10 @@ class ClientTest extends TestCase {
         $user->addChild('EmployeeID', $this->user1->getEmployeeId());
         $user->addChild('GivenName', $this->user1->getGivenName());
         $user->addChild('Surname', $this->user1->getSurname());
-        $user->addChild('Name', $this->user1->getGivenName() . ' ' . $this->user1->getSurname());
+        $user->addChild(
+            'Name',
+            $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+        );
         $user->addChild('Status', $this->user1->getStatus());
         $user->addChild('Title', $this->user1->getTitle());
         $user->addChild('Division', $this->user1->getDivision());
@@ -2334,7 +2558,9 @@ class ClientTest extends TestCase {
             ->setValue($this->user1->getEmployeeId());
         $name = (new MatchTag())
             ->setMatchType('EXACT')
-            ->setValue($this->user1->getGivenName() . ' ' . $this->user1->getSurname());
+            ->setValue(
+                $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+            );
         $now = new DateTime();
         $time1 = new DateTime('2022-07-25');
         $time2 = new DateTime('2022-07-26');
@@ -2391,7 +2617,10 @@ class ClientTest extends TestCase {
         $user1->addChild('EmployeeID', $this->user1->getEmployeeId());
         $user1->addChild('GivenName', $this->user1->getGivenName());
         $user1->addChild('Surname', $this->user1->getSurname());
-        $user1->addChild('Name', $this->user1->getGivenName() . ' ' . $this->user1->getSurname());
+        $user1->addChild(
+            'Name',
+            $this->user1->getGivenName() . ' ' . $this->user1->getSurname()
+        );
         $user1->addChild('Status', $this->user1->getStatus());
         $user1->addChild('Title', $this->user1->getTitle());
         $user1->addChild('Division', $this->user1->getDivision());
@@ -2408,7 +2637,10 @@ class ClientTest extends TestCase {
         $user2->addChild('EmployeeID', $this->user2->getEmployeeId());
         $user2->addChild('GivenName', $this->user2->getGivenName());
         $user2->addChild('Surname', $this->user2->getSurname());
-        $user2->addChild('Name', $this->user2->getGivenName() . ' ' . $this->user2->getSurname());
+        $user2->addChild(
+            'Name',
+            $this->user2->getGivenName() . ' ' . $this->user2->getSurname()
+        );
         $user2->addChild('Status', $this->user2->getStatus());
         $user2->addChild('Title', $this->user2->getTitle());
         $user2->addChild('Division', $this->user2->getDivision());
@@ -2425,7 +2657,10 @@ class ClientTest extends TestCase {
         $user3->addChild('EmployeeID', $this->user3->getEmployeeId());
         $user3->addChild('GivenName', $this->user3->getGivenName());
         $user3->addChild('Surname', $this->user3->getSurname());
-        $user3->addChild('Name', $this->user3->getGivenName() . ' ' . $this->user3->getSurname());
+        $user3->addChild(
+            'Name',
+            $this->user3->getGivenName() . ' ' . $this->user3->getSurname()
+        );
         $user3->addChild('Status', $this->user3->getStatus());
         $user3->addChild('Title', $this->user3->getTitle());
         $user3->addChild('Division', $this->user3->getDivision());
@@ -2469,7 +2704,10 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $user1);
         self::assertEquals($this->user1->getEmail(), $user1['Email']);
         self::assertArrayHasKey('EmployeeID', $user1);
-        self::assertEquals($this->user1->getEmployeeID(), $user1['EmployeeID']);
+        self::assertEquals(
+            $this->user1->getEmployeeID(),
+            $user1['EmployeeID']
+        );
         self::assertArrayHasKey('GivenName', $user1);
         self::assertEquals($this->user1->getGivenName(), $user1['GivenName']);
         self::assertArrayHasKey('Surname', $user1);
@@ -2504,7 +2742,10 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $user2);
         self::assertEquals($this->user2->getEmail(), $user2['Email']);
         self::assertArrayHasKey('EmployeeID', $user2);
-        self::assertEquals($this->user2->getEmployeeID(), $user2['EmployeeID']);
+        self::assertEquals(
+            $this->user2->getEmployeeID(),
+            $user2['EmployeeID']
+        );
         self::assertArrayHasKey('GivenName', $user2);
         self::assertEquals($this->user2->getGivenName(), $user2['GivenName']);
         self::assertArrayHasKey('Surname', $user2);
@@ -2539,7 +2780,10 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $user3);
         self::assertEquals($this->user3->getEmail(), $user3['Email']);
         self::assertArrayHasKey('EmployeeID', $user3);
-        self::assertEquals($this->user3->getEmployeeID(), $user3['EmployeeID']);
+        self::assertEquals(
+            $this->user3->getEmployeeID(),
+            $user3['EmployeeID']
+        );
         self::assertArrayHasKey('GivenName', $user3);
         self::assertEquals($this->user3->getGivenName(), $user3['GivenName']);
         self::assertArrayHasKey('Surname', $user3);
@@ -2579,7 +2823,9 @@ class ClientTest extends TestCase {
         $client = (new Client());
         
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('Account API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'Account API key must be set before creating a query.'
+        );
         $client->updateUser($this->user1);
     }
 
@@ -2593,7 +2839,9 @@ class ClientTest extends TestCase {
             ->setAccountApi($accountApi);
 
         self::expectException(MissingValueException::class);
-        self::expectExceptionMessage('User API key must be set before creating a query.');
+        self::expectExceptionMessage(
+            'User API key must be set before creating a query.'
+        );
         $client->UpdateUser($this->user1);
     }
 
@@ -2746,8 +2994,14 @@ class ClientTest extends TestCase {
         self::assertCount(22, $profileTag);
         self::assertContains('Supervisors', $profileTag);
         $supervisors = $packageAsXml->Parameters->User->Profile->Supervisors->asXML();
-        $supervisor1 = '<Supervisors><Supervisor>' . $this->user1->getSupervisors()[0] . '</Supervisor>';
-        $supervisor2 = '<Supervisor>' . $this->user1->getSupervisors()[1] . '</Supervisor></Supervisors>';
+        $supervisor1 =
+            '<Supervisors><Supervisor>'
+            . $this->user1->getSupervisors()[0]
+            . '</Supervisor>';
+        $supervisor2 =
+            '<Supervisor>'
+            . $this->user1->getSupervisors()[1]
+            . '</Supervisor></Supervisors>';
         self::assertStringContainsString($supervisor1, $supervisors);
         self::assertStringContainsString($supervisor2, $supervisors);
         self::assertContains('Organization', $profileTag);
@@ -2949,8 +3203,14 @@ class ClientTest extends TestCase {
         );
 
         // Ensure that the <Venues> and <Wages> tags are empty.
-        self::assertCount(0, $packageAsXml->Parameters->User->Venues->children());
-        self::assertCount(0, $packageAsXml->Parameters->User->Wages->Children());
+        self::assertCount(
+            0,
+            $packageAsXml->Parameters->User->Venues->children()
+        );
+        self::assertCount(
+            0,
+            $packageAsXml->Parameters->User->Wages->Children()
+        );
     }
 
     /**
@@ -3084,7 +3344,10 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $response);
         self::assertEquals($response['Email'], $this->user1->getEmail());
         self::assertArrayHasKey('EmployeeID', $response);
-        self::assertEquals($response['EmployeeID'], $this->user1->getEmployeeId());
+        self::assertEquals(
+            $response['EmployeeID'],
+            $this->user1->getEmployeeId()
+        );
 
         self::assertIsArray($errors);
         self::assertCount(1, $errors);
@@ -3140,7 +3403,10 @@ class ClientTest extends TestCase {
         self::assertArrayHasKey('Email', $response);
         self::assertEquals($response['Email'], $this->user1->getEmail());
         self::assertArrayHasKey('EmployeeID', $response);
-        self::assertEquals($response['EmployeeID'], $this->user1->getEmployeeId());
+        self::assertEquals(
+            $response['EmployeeID'],
+            $this->user1->getEmployeeId()
+        );
 
         self::assertIsArray($errors);
         self::assertCount(0, $errors);
