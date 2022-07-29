@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace SmarterU\Exceptions;
+namespace CBS\SmarterU\Exceptions;
 
 /**
  * An exception type to use when the SmarterU API returns a failure message

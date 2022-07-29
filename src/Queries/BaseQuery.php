@@ -25,29 +25,29 @@ abstract class BaseQuery {
     /**
      * The account API key.
      */
-    protected string $accountApi;
+    protected ?string $accountApi = null;
 
     /**
      * The user API key.
      */
-    protected string $userApi;
+    protected ?string $userApi = null;
 
     /**
      * Return the account API key.
      *
-     * @return string the account API key
+     * @return ?string the account API key
      */
-    public function getAccountApi(): string {
+    public function getAccountApi(): ?string {
         return $this->accountApi;
     }
 
     /**
      * Set the account API key.
      *
-     * @param string $accountApi the account API key
+     * @param ?string $accountApi the account API key
      * @return self
      */
-    public function setAccountApi(string $accountApi): self {
+    public function setAccountApi(?string $accountApi): self {
         $this->accountApi = $accountApi;
         return $this;
     }
@@ -55,19 +55,19 @@ abstract class BaseQuery {
     /**
      * Return the user API key.
      *
-     * @return string the user API key
+     * @return ?string the user API key
      */
-    public function getUserApi(): string {
+    public function getUserApi(): ?string {
         return $this->userApi;
     }
 
     /**
      * Set the user API key.
      *
-     * @param string $userApi the user API key
+     * @param ?string $userApi the user API key
      * @return self
      */
-    public function setUserApi(string $userApi): self {
+    public function setUserApi(?string $userApi): self {
         $this->userApi = $userApi;
         return $this;
     }

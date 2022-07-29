@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace CBS\SmarterU\DataTypes;
 
+use CBS\SmarterU\Exceptions\MissingValueException;
 use CBS\SmarterU\Queries\BaseQuery;
 use SimpleXMLElement;
 
@@ -262,7 +263,7 @@ class User {
      * plans must already exist within your SmarterU account. Plans can be
      * identified by their names and/or their IDs.
      */
-    protected ?array $roles;
+    protected ?array $roles = null;
 
     /**
      * Specifies whether the user will receive email notifications.
@@ -286,12 +287,12 @@ class User {
     /**
      * A container for assigning venues to the user.
      */
-    protected array $venues;
+    protected ?array $venues = null;
 
     /**
      * A container for adding a user's wages.
      */
-    protected array $wages;
+    protected ?array $wages = null;
 
     
     #endregion Properties
@@ -1070,9 +1071,9 @@ class User {
     /**
      * Get the container for assigning venues to the user.
      *
-     * @return array the container for the user's venues
+     * @return ?array the container for the user's venues
      */
-    public function getVenues(): array {
+    public function getVenues(): ?array {
         return $this->venues;
     }
 
@@ -1090,9 +1091,9 @@ class User {
     /**
      * Get the container for adding the user's wages.
      *
-     * @return array the container for the user's wages
+     * @return ?array the container for the user's wages
      */
-    public function getWages(): array {
+    public function getWages(): ?array {
         return $this->wages;
     }
 
@@ -1111,128 +1112,142 @@ class User {
      * Generate an XML representation of the user, to be passed into the API
      * for a CreateUser or UpdateUser query.
      *
-     * @param string $accountApi the account API key of the user making the request
-     * @param string $userApi the user API key of the user making the request
+     * @param ?string $accountApi the account API key of the user making the request
+     * @param ?string $userApi the user API key of the user making the request
      * @param string $methodName the name of the method being called
      *
-     * @return SimpleXMLElement an XML representation of the user
+     * @return string an XML representation of the user
      */
     public function toSimpleXML(
-        string $accountApi,
-        string $userApi,
+        ?string $accountApi,
+        ?string $userApi,
         string $methodName
-    ): SimpleXMLElement {
-        $query = new BaseQuery();
-        $query->setAccountApi($accountApi);
-        $query->setUserApi($userApi);
+    ): string {
+        if (!isset($accountApi)) {
+            throw new MissingValueException(
+                'Account API key must be set before creating a query.'
+            );
+        }
+        if (!isset($userApi)) {
+            throw new MissingValueException(
+                'User API key must be set before creating a query.'
+            );
+        }
+        
+        $xmlString = <<<XML
+        <SmarterU>
+        </SmarterU>
+        XML;
 
-        $xml = $query->createBaseXml();
+        $xml = simplexml_load_string($xmlString);
+        $xml->addChild('AccountAPI', $accountApi);
+        $xml->addChild('UserAPI', $userApi);
         $xml->addChild('Method', $methodName);
         $parameters = $xml->addChild('Parameters');
         $userTag = $parameters->addChild('User');
         $info = $userTag->addChild('Info');
 
-        $info->addChild('Email', $user->getEmail());
-        $info->addChild('EmployeeID', $user->getEmployeeId());
-        $info->addChild('GivenName', $user->getGivenName());
-        $info->addChild('Surname', $user->getSurname());
-        $info->addChild('Password', $user->getPassword());
-        if (!empty($user->getTimezone())) {
-            $info->addChild('TimeZone', $user->getTimezone());
+        $info->addChild('Email', $this->getEmail());
+        $info->addChild('EmployeeID', $this->getEmployeeId());
+        $info->addChild('GivenName', $this->getGivenName());
+        $info->addChild('Surname', $this->getSurname());
+        $info->addChild('Password', $this->getPassword());
+        if (!empty($this->getTimezone())) {
+            $info->addChild('Timezone', $this->getTimezone());
         }
-        $info->addChild('LearnerNotifications', $user->getLearnerNotifications());
-        $info->addChild('SupervisorNotifications', $user->getSupervisorNotifications());
-        $info->addChild('SendEmailTo', $user->getSendEmailTo());
-        $info->addChild('AlternateEmail', $user->getAlternateEmail());
-        $info->addChild('AuthenticationType', $user->getAuthenticationType());
+        $info->addChild('LearnerNotifications', (string) $this->getLearnerNotifications());
+        $info->addChild('SupervisorNotifications', (string) $this->getSupervisorNotifications());
+        $info->addChild('SendEmailTo', $this->getSendEmailTo());
+        $info->addChild('AlternateEmail', $this->getAlternateEmail());
+        $info->addChild('AuthenticationType', $this->getAuthenticationType());
 
         $profile = $userTag->addChild('Profile');
-        if (!empty($user->getSupervisors())) {
+        if (!empty($this->getSupervisors())) {
             $supervisors = $profile->addChild('Supervisors');
-            foreach ($user->getSupervisors() as $supervisor) {
+            foreach ($this->getSupervisors() as $supervisor) {
                 $supervisors->addChild('Supervisor', $supervisor);
             }
         }
-        if (!empty($user->getOrganization())) {
-            $profile->addChild('Organization', $user->getOrganization());
+        if (!empty($this->getOrganization())) {
+            $profile->addChild('Organization', $this->getOrganization());
         }
-        if (!empty($user->getTeams())) {
+        if (!empty($this->getTeams())) {
             $teams = $profile->addChild('Teams');
-            foreach ($user->getTeams() as $team) {
+            foreach ($this->getTeams() as $team) {
                 $teams->addChild('Team', $team);
             }
         }
-        if (!empty($user->getCustomFields())) {
+        if (!empty($this->getCustomFields())) {
             // TODO implement this. For iteration 1, we can assume this will be empty.
         }
-        if (!empty($user->getLanguage())) {
-            $profile->addChild('Language', $user->getLanguage());
+        if (!empty($this->getLanguage())) {
+            $profile->addChild('Language', $this->getLanguage());
         }
-        if (!empty($user->getStatus())) {
-            $profile->addChild('Status', $user->getStatus());
+        if (!empty($this->getStatus())) {
+            $profile->addChild('Status', $this->getStatus());
         }
-        if (!empty($user->getTitle())) {
-            $profile->addChild('Title', $user->getTitle());
+        if (!empty($this->getTitle())) {
+            $profile->addChild('Title', $this->getTitle());
         }
-        if (!empty($user->getDivision())) {
-            $profile->addChild('Division', $user->getDivision());
+        if (!empty($this->getDivision())) {
+            $profile->addChild('Division', $this->getDivision());
         }
-        if (!empty($user->getAllowFeedback())) {
-            $profile->addChild('AllowFeedback', $user->getAllowFeedback());
+        if (!empty($this->getAllowFeedback())) {
+            $profile->addChild('AllowFeedback', (string) $this->getAllowFeedback());
         }
-        if (!empty($user->getPhonePrimary())) {
-            $profile->addChild('PhonePrimary', $user->getPhonePrimary());
+        if (!empty($this->getPhonePrimary())) {
+            $profile->addChild('PhonePrimary', $this->getPhonePrimary());
         }
-        if (!empty($user->getPhoneAlternate())) {
-            $profile->addChild('PhoneAlternate', $user->getPhoneAlternate());
+        if (!empty($this->getPhoneAlternate())) {
+            $profile->addChild('PhoneAlternate', $this->getPhoneAlternate());
         }
-        if (!empty($user->getPhoneMobile())) {
-            $profile->addChild('PhoneMobile', $user->getPhoneMobile());
+        if (!empty($this->getPhoneMobile())) {
+            $profile->addChild('PhoneMobile', $this->getPhoneMobile());
         }
-        if (!empty($user->getFax())) {
-            $profile->addChild('Fax', $user->getFax());
+        if (!empty($this->getFax())) {
+            $profile->addChild('Fax', $this->getFax());
         }
-        if (!empty($user->getWebsite())) {
-            $profile->addChild('Website',$user->getWebsite());
+        if (!empty($this->getWebsite())) {
+            $profile->addChild('Website',$this->getWebsite());
         }
-        if (!empty($user->getAddress1())) {
-            $profile->addChild('Address1', $user->getAddress1());
+        if (!empty($this->getAddress1())) {
+            $profile->addChild('Address1', $this->getAddress1());
         }
-        if (!empty($user->getAddress2())) {
-            $profile->addChild('Address2',$user->getAddress2());
+        if (!empty($this->getAddress2())) {
+            $profile->addChild('Address2',$this->getAddress2());
         }
-        if (!empty($user->getCity())) {
-            $profile->addChild('City', $user->getCity());
+        if (!empty($this->getCity())) {
+            $profile->addChild('City', $this->getCity());
         }
-        if (!empty($user->getProvince())) {
-            $profile->addChild('Province', $user->getProvince());
+        if (!empty($this->getProvince())) {
+            $profile->addChild('Province', $this->getProvince());
         }
-        if (!empty($user->getCountry())) {
-            $profile->addChild('Country', $user->getCountry());
+        if (!empty($this->getCountry())) {
+            $profile->addChild('Country', $this->getCountry());
         }
-        if (!empty($user->getPostalCode())) {
-            $profile->addChild('PostalCode', $user->getPostalCode());
+        if (!empty($this->getPostalCode())) {
+            $profile->addChild('PostalCode', $this->getPostalCode());
         }
-        if (!empty($user->getSendMailTo())) {
-            $profile->addChild('SendMailTo', $user->getSendMailTo());
+        if (!empty($this->getSendMailTo())) {
+            $profile->addChild('SendMailTo', $this->getSendMailTo());
         }
-        if (!empty($user->getRoles())) {
+        if (!empty($this->getRoles())) {
             // TODO implement this. For iteration 1, we can assume this is empty.
         }
-        if (!empty($user->getReceiveNotifications())) {
-            $profile->addChild('ReceiveNotifications', $user->getReceiveNotifications());
+        if (!empty($this->getReceiveNotifications())) {
+            $profile->addChild('ReceiveNotifications', (string) $this->getReceiveNotifications());
         }
-        if (!empty($user->getHomeGroup())) {
-            $profile->addChild('HomeGroup', $user->getHomeGroup());
+        if (!empty($this->getHomeGroup())) {
+            $profile->addChild('HomeGroup', $this->getHomeGroup());
         }
         $groups = $userTag->addChild('Groups');
-        foreach($user->getGroups() as $group) {
+        foreach($this->getGroups() as $group) {
             $groupTag = $groups->addChild('Group');
-            if (!empty($group->getName())) {
-                $groupTag->addChild('GroupName', $group->getName());
+            if (!empty($group->getGroupName())) {
+                $groupTag->addChild('GroupName', $group->getGroupName());
             }
-            if (!empty($group->getId())) {
-                $groupTag->addChild('GroupID', $group->getId());
+            if (!empty($group->getGroupId())) {
+                $groupTag->addChild('GroupID', $group->getGroupId());
             }
             foreach($group->getPermissions() as $permission){
                 $permissionTag = $groupTag->addChild('Permission');
@@ -1241,11 +1256,13 @@ class User {
             }
         }
 
-        if (!empty($user->getVenues())) {
+        $venues = $userTag->addChild('Venues');
+        if (!empty($this->getVenues())) {
             // TODO implement this. For iteration 1, we can assume it's empty.
         }
 
-        if (!empty($user->getWages())) {
+        $wages = $userTag->addChild('Wages');
+        if (!empty($this->getWages())) {
             // TODO implement this. For iteration 1, we can assume it's empty.
         }
 
