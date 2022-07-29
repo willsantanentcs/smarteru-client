@@ -301,19 +301,31 @@ class Client {
      * @param ListUsersQuery $query The query representing the Users to return
      * @return User[] All Users that match the query criteria
      */
-    public function listUsers(ListUserQuery $query): array {
+    public function listUsers(ListUsersQuery $query): array {
+        // If the API keys are not already set in the query, pass them in.
+        if (empty($query->getAccountApi())) {
+            $query->setAccountApi($this->getAccountApi());
+        }
+        if (empty($query->getUserApi())) {
+            $query->setUserApi($this->getUserApi());
+        }
+
         $xml = $query->toXml();
 
         if (empty($this->getHttpClient())) {
-            $this->setHttpClient(new HttpClient(['base_uri' => $this->POST_URL]));
+            $this->setHttpClient(new HttpClient(['base_uri' => self::POST_URL]));
         }
 
-        $response = $this->getHttpClient()->request('POST', $POST_URL, ['package' => $xml->asXML()]);
+        try {
+            $response = $this->getHttpClient()->request('POST', self::POST_URL, ['package' => $xml]);
+        }
+        catch (\Exception $e) {
+            throw new HttpException($e->getMessage());
+        }
         $body = (string) $response->getBody();
         $bodyAsXml = simplexml_load_string($body);
 
-        $result = $bodyAsXml->Success;
-        $users = $bodyAsXml->Info->Users;
+        $result = (string) $bodyAsXml->Result;
 
         $errorMessages = [];
         $errors = $bodyAsXml->Errors;
@@ -327,16 +339,16 @@ class Client {
                 $errorsAsString .= $id;
                 $errorsAsString .= ': ';
                 $errorsAsString .= $message;
-                $errorsAsString .= '\n';
+                $errorsAsString .= ', ';
             }
             throw new SmarterUException($errorsAsString);
         }
 
         $users = [];
-        foreach ($users->children() as $user) {
+        foreach ($bodyAsXml->Info->Users->children() as $user) {
             $currentUser = [];
             $teams = [];
-            foreach ($user->Teams->children() as $team) {
+            foreach ((array) $user->Teams->Team as $team) {
                 $teams[] = $team;
             }
             $currentUser['ID'] = $user->ID;
@@ -344,6 +356,7 @@ class Client {
             $currentUser['EmployeeID'] = $user->EmployeeID;
             $currentUser['GivenName'] = $user->GivenName;
             $currentUser['Surname'] = $user->Surname;
+            $currentUser['Name'] = $user->GivenName . ' ' . $user->Surname;
             $currentUser['Status'] = $user->Status;
             $currentUser['Title'] = $user->Title;
             $currentUser['Division'] = $user->Division;
@@ -354,7 +367,11 @@ class Client {
             $users[] = $currentUser;
         }
 
-        return [$users, $errorMessages];
+        $result = [
+            'Response' => $users,
+            'Errors' => $errorMessages
+        ];
+        return $result;
     }
 
     /**
