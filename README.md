@@ -1,7 +1,6 @@
-# PHP 8.0 SmarterU LMS API CLient
+# SmarterU API Client
 
-An API Client for the [SmarterU LMS API](https://support.smarteru.com/docs/api).
-This project is not affiliated with Neovation.
+This repository provides a PHP 8 SmarterU API client library.
 
 ## Requirements
 
