@@ -29,6 +29,10 @@ class GroupPermissionsTest extends TestCase {
         $groupName = 'phpunit';
         $groupId = 12;
 
+        $email = 'phpunit@test.com';
+        $employeeId = '4';
+        $homeGroup = true;
+
         $permission1 = (new Permission())
             ->setAction('Grant')
             ->setCode('MANAGE_GROUP');
@@ -41,10 +45,15 @@ class GroupPermissionsTest extends TestCase {
 
         $groupPermission = (new GroupPermissions())
             ->setGroupName($groupName)
-            ->setPermissions($permissions);
+            ->setPermissions($permissions)
+            ->setEmail($email)
+            ->setHomeGroup($homeGroup); 
 
         self::assertEquals($groupName, $groupPermission->getGroupName());
         self::assertNull($groupPermission->getGroupId());
+        self::assertEquals($email, $groupPermission->getEmail());
+        self::assertNull($groupPermission->getEmployeeId());
+        self::assertEquals($homeGroup, $groupPermission->getHomeGroup());
         self::assertCount(2, $groupPermission->getPermissions());
         self::assertContains($permission1, $groupPermission->getPermissions());
         self::assertContains($permission2, $groupPermission->getPermissions());
@@ -58,5 +67,13 @@ class GroupPermissionsTest extends TestCase {
         $groupPermission->setGroupName($groupName);
         self::assertEquals($groupName, $groupPermission->getGroupName());
         self::assertNull($groupPermission->getGroupId());
+
+        $groupPermission->setEmployeeId($employeeId);
+        self::assertEquals($employeeId, $groupPermission->getEmployeeId());
+        self::assertNull($groupPermission->getEmail());
+
+        $groupPermission->setEmail($email);
+        self::assertEquals($email, $groupPermission->getEmail());
+        self::assertNull($groupPermission->getEmployeeId());
     }
 }

@@ -35,8 +35,29 @@ class GroupPermissions {
     protected ?int $groupId;
 
     /**
+     * The email address of the user you want to assign to the group. The user
+     * must already exist within your SmarterU account. This tag is mutually
+     * exclusive with the EmployeeID tag. This is the Email returned by the
+     * getUser and listUsers methods. 
+     */
+    protected ?string $email;
+
+    /**
+     * The employee ID of the user you want to assign to the group. The user
+     * must already exist within your SmarterU account. This tag is mutually
+     * exclusive with the Email tag. This is the EmployeeID returned by the
+     * getUser and listUsers methods. 
+     */
+    protected ?string $employeeId;
+
+    /**
+     * Specifies if this group will be the user's home group.
+     */
+    protected ?bool $homeGroup;
+
+    /**
      * A container for the permissions to be granted to the user. Elements must
-     * be an instance of SmarterU\DataTypes\Permission.
+     * be an instance of CBS\SmarterU\DataTypes\Permission.
      */
     protected array $permissions;
 
@@ -79,6 +100,68 @@ class GroupPermissions {
     public function setGroupId(int $groupId): self {
         $this->groupName = null;
         $this->groupId = $groupId;
+        return $this;
+    }
+
+    /**
+     * Get the email address of the user you want to assign to the group.
+     *
+     * @return ?string the email address of the user assigned to the group
+     */
+    public function getEmail(): ?string {
+        return $this->email;
+    }
+
+    /**
+     * Set the email address of the user you want to assign to the group.
+     *
+     * @param string $email the email address of the user assigned to the group
+     */
+    public function setEmail(string $email): self {
+        $this->email = $email;
+        $this->employeeId = null;
+        return $this;
+    }
+
+    /**
+     * Get the employee ID of the user you want to assign to the group.
+     *
+     * @return ?string the employee ID of the user assigned to the group
+     */
+    public function getEmployeeId(): ?string {
+        return $this->employeeId;
+    }
+
+    /**
+     * Set the employee ID of the user you want to assign to the group.
+     *
+     * @param string $employeeId the employee ID of the user assigned to the group
+     * @return self
+     */
+    public function setEmployeeId(string $employeeId): self {
+        $this->employeeId = $employeeId;
+        $this->email = null;
+        return $this;
+    }
+
+    /**
+     * Get whether or not this group is the user's home group.
+     *
+     * @return bool true if and only if this group is the user's home group
+     */
+    public function getHomeGroup(): ?bool {
+        return $this->homeGroup;
+    }
+
+    /**
+     * Set whether or not this group is the user's home group.
+     *
+     * @param bool $homeGroup true if and only if this group is the user's
+     *      home group
+     * @return self
+     */
+    public function setHomeGroup(bool $homeGroup): self {
+        $this->homeGroup = $homeGroup;
         return $this;
     }
 
