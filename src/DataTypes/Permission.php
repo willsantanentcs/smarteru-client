@@ -25,7 +25,7 @@ class Permission {
     /**
      * The action to be taken. Acceptable values are either 'Grant' or 'Deny'.
      */
-    protected string $action;
+    protected ?string $action;
 
     /**
      * The specific code for the permission to be granted. Acceptable values
@@ -45,9 +45,9 @@ class Permission {
     /**
      * Get the action to be taken.
      *
-     * @return string the action to be taken.
+     * @return ?string the action to be taken.
      */
-    public function getAction(): string {
+    public function getAction(): ?string {
         return $this->action;
     }
 

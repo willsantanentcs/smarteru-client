@@ -24,10 +24,10 @@ class Tag {
     #region Properties
 
     /** The ID of the tag. */
-    protected int $tagId;
+    protected ?string $tagId;
 
     /** The name of the tag. */
-    protected string $tagName;
+    protected >string $tagName;
 
     /** The tag's values. */
     protected string $tagValues;
@@ -44,15 +44,16 @@ class Tag {
      */
     public function setTagId(int $tagId): self {
         $this->tagId = $tagId;
+        $this->tagName = null;
         return $this;
     }
 
     /**
      * Returns the tag id.
      *
-     * @return int Returns the tag id.
+     * @return string Returns the tag id.
      */
-    public function getTagId(): int {
+    public function getTagId(): string {
         return $this->tagId;
     }
 
@@ -64,15 +65,16 @@ class Tag {
      */
     public function setTagName(string $tagName): self {
         $this->tagName = $tagName;
+        $this->tagId = null;
         return $this;
     }
 
     /**
      * Returns the tag name.
      *
-     * @return string Returns the tag name.
+     * @return ?string Returns the tag name.
      */
-    public function getTagName(): string {
+    public function getTagName(): ?string {
         return $this->tagName;
     }
 

@@ -15,8 +15,11 @@ declare(strict_types=1);
 namespace CBS\SmarterU\DataTypes;
 
 use CBS\SmarterU\DataTypes\GroupPermissions;
+use CBS\SmarterU\DataTypes\LearningModule;
+use CBS\SmarterU\DataTypes\SubscriptionVariant;
 use CBS\SmarterU\DataTypes\Tag;
 use CBS\SmarterU\Exceptions\InvalidArgumentException;
+use CBS\SmarterU\Exceptions\MissingValueException;
 use DateTimeInterface;
 
 /**
@@ -644,4 +647,116 @@ class Group {
     }
 
     #endregion Getters and Setters
+
+    /**
+     * Return an XML representation of the Group to be passed into the SmarterU
+     * API as a parameter for group-related queries.
+     *
+     * @param ?string $accountApi the account API key of the user making the request
+     * @param ?string $userApi the user API key of the user making the request
+     * @param string $methodName the name of the method being called
+     *
+     * @return string an XML representation of the group
+     */
+    public function toSimpleXML(
+        ?string $accountApi,
+        ?string $userApi,
+        string $methodName
+    ): string {
+        if (!isset($accountApi)) {
+            throw new MissingValueException(
+                'Account API key must be set before creating a query.'
+            );
+        }
+        if (!isset($userApi)) {
+            throw new MissingValueException(
+                'User API key must be set before creating a query.'
+            );
+        }
+        
+        $xmlString = <<<XML
+        <SmarterU>
+        </SmarterU>
+        XML;
+
+        $xml = simplexml_load_string($xmlString);
+        $xml->addChild('AccountAPI', $accountApi);
+        $xml->addChild('UserAPI', $userApi);
+        $xml->addChild('Method', $methodName);
+        $parameters = $xml->addChild('Parameters');
+        $group = $parameters->addChild('Group');
+        $group->addChild('Name', $this->getName());
+        $group->addChild('GroupID', $this->getGroupId());
+        $group->addChild('Status', $this->getStatus());
+        $group->addChild('Description', $this->getDescription());
+        $group->addChild('HomeGroupMessage', $this->getHomeGroupMessage());
+        $notificationEmails = $group->addChild('NotificationEmails');
+        foreach ($this->getNotificationEmails() as $email) {
+            $notificationEmails->addChild('NotificationEmail', $email);
+        }
+        if (!empty($this->getUserHelpOverrideDefault())) {
+            $group->addChild('UserHelpOverrideDefault', $this->getUserHelpOverrideDefault());
+        }
+        if (!empty($this->getUserHelpEnabled())) {
+            $group->addChild('UserHelpEnabled', $this->getUserHelpEnabled());
+        }
+        if (!empty($this->getUserHelpEmail())) {
+            $group->addChild('UserHelpEmail', implode(',', $this->getUserHelpEmail()));
+        }
+        if (!empty($this->getUserHelpText())) {
+            $group->addChild('UserHelpText', $this->getUserHelpText());
+        }
+        if (!empty($this->getTags())) {
+            $tags2 = $group->addChild('Tags2');
+            foreach ($this->getTags() as $tag) {
+                $tag2 = $tags2->addChild('Tag2');
+                if (!empty($tag->getTagId())) {
+                    $tag2->addChild('TagID', $tag->getTagId());
+                } else if (!empty($tag->getTagName())) {
+                    $tag2->addChild('TagName', $tag->getTagName());
+                } else {
+                    throw new MissingValueException('Every tag must have either a name or an ID');
+                }
+                $tag2->addChild('TagValues', $tag->getTagValues());
+            }
+        }
+        if (!empty($this->getUserLimitEnabled()) && !empty($this->getUserLimitAmount())) {
+            $userLimit = $group->addChild('UserLimit');
+            $userLimit->addChild('Enabled', (string) $this->getUserLimitEnabled());
+            $userLimit->addChild('Amount', $this->getUserLimitAmount());
+        }
+        $users = $group->addChild('Users');
+        foreach ($this->getUsers() as $user) {
+            $userTag = $users->addChild('User');
+            if (!empty($user->getEmail())) {
+                $userTag->addChild('Email', $user->getEmail());
+            } else if (!empty($user->getEmployeeId())) {
+                $userTag->addChild('EmployeeID', $user->getEmployeeId());
+            } else {
+                throw new MissingValueException(
+                    'Each member of the group must be identified by either email or employee ID'
+                );
+            }
+            $userTag->addChild('HomeGroup', $user->getHomeGroup());
+            $permissions = $userTag->addChild('Permissions');
+            foreach ($user->getPermissions() as $permission) {
+                $permissions->addChild('Code', $permission->getCode());
+            }
+        }
+        $learningModules = $group->addChild('LearningModules');
+        foreach ($this->getLearningModules() as $module) {
+            $learningModule = $learningModules->addChild('LearningModule');
+            $learningModule->addChild('ID', $module->getId());
+            $learningModule->addChild('AllowSelfEnroll', (string) $module->getAllowSelfEnroll());
+            $learningModule->addChild('AutoEnroll', (string) $module->getAutoEnroll());
+        }
+        $subscriptionVariants = $group->addChild('SubscriptionVariants');
+        foreach ($this->getSubscriptionVariants as $variant) {
+            $subscriptionVariant = $subscriptionVariants->addChild('SubscriptionVariant');
+            $subscriptionVariant->addChild('ID', $variant->getId());
+            $subscriptionVariant->addChild('RequiresCredits', (string) $variant->getRequiresCredits());
+        }
+        if (!empty($this->getDashboardSetId())) {
+            $group->addChild('DashboardSetID', $this->getDashboardSetId());
+        }
 }
