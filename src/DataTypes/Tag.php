@@ -1,0 +1,100 @@
+<?php
+
+/**
+ * This file contains the class CBS\SmarterU\DataTypes\Tag.
+ *
+ * @author Brian Reich <brian.reich@thecoresolution.com>
+ * @copyright $year$ Core Business Solutions
+ * @license Proprietary
+ * @since 2022/04/20
+ * @version $version$
+ */
+
+declare(strict_types=1);
+
+namespace CBS\SmarterU\DataTypes;
+
+/**
+ * Tag is a classification that can be applied to things like Groups in
+ * SmarterU.
+ *
+ * @see https://help.smarteru.com/api-creategroup$tags2_tag_group
+ */
+class Tag {
+    #region Properties
+
+    /** The ID of the tag. */
+    protected int $tagId;
+
+    /** The name of the tag. */
+    protected string $tagName;
+
+    /** The tag's values. */
+    protected string $tagValues;
+
+    #endregion Properties
+
+    #region Getters and Setters
+
+    /**
+     * Sets the tag id.
+     *
+     * @param int $tagId The tag id.
+     * @return self
+     */
+    public function setTagId(int $tagId): self {
+        $this->tagId = $tagId;
+        return $this;
+    }
+
+    /**
+     * Returns the tag id.
+     *
+     * @return int Returns the tag id.
+     */
+    public function getTagId(): int {
+        return $this->tagId;
+    }
+
+    /**
+     * Sets the tag name.
+     *
+     * @param string $tagName The tag name
+     * @return self
+     */
+    public function setTagName(string $tagName): self {
+        $this->tagName = $tagName;
+        return $this;
+    }
+
+    /**
+     * Returns the tag name.
+     *
+     * @return string Returns the tag name.
+     */
+    public function getTagName(): string {
+        return $this->tagName;
+    }
+
+    /**
+     * Sets a comma separated list of tag values.
+     *
+     * @param string $tagValues A comma separated list of tag values.
+     * @return self
+     */
+    public function setTagValues(string $tagValues): self {
+        $this->tagValues = $tagValues;
+        return $this;
+    }
+
+    /**
+     * Returns a comma separated list of tag values.
+     *
+     * @return string Returns a comma separated list of tag values.
+     */
+    public function getTagValues(): string {
+        return $this->tagValues;
+    }
+
+    #endregion Getters and Setters
+}

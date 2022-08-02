@@ -19,6 +19,12 @@ use CBS\SmarterU\DataTypes\Permission;
 /**
  * The GroupPermissions class represents a User's affiliation with a Group
  * and the permissions that User has within the Group.
+ *
+ * Note: All GroupPermissions instances must contain the "permissions" array.
+ * The GroupPermisisons instance used in User::$groups must contain either the
+ * group name or group ID. The GroupPermissions instance used in Group::$users
+ * must contain the home group, and either the email or employee ID.
+ * Unnecessary attributes will be ignored.
  */
 class GroupPermissions {
     /**
@@ -59,7 +65,7 @@ class GroupPermissions {
      * A container for the permissions to be granted to the user. Elements must
      * be an instance of CBS\SmarterU\DataTypes\Permission.
      */
-    protected array $permissions;
+    protected array $permissions = [];
 
     /**
      * Get the name of the group the user is a member of.

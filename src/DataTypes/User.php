@@ -280,7 +280,7 @@ class User {
     /**
      * A container for assigning groups to the user and specifying group
      * permissions to be granted to this user. Each element must be an instance
-     * of SmarterU\DataTypes\GroupPermissions.
+     * of CBS\SmarterU\DataTypes\GroupPermissions.
      */
     protected array $groups;
 
