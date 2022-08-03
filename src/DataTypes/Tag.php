@@ -27,7 +27,7 @@ class Tag {
     protected ?string $tagId;
 
     /** The name of the tag. */
-    protected >string $tagName;
+    protected ?string $tagName;
 
     /** The tag's values. */
     protected string $tagValues;
@@ -39,10 +39,10 @@ class Tag {
     /**
      * Sets the tag id.
      *
-     * @param int $tagId The tag id.
+     * @param string $tagId The tag id.
      * @return self
      */
-    public function setTagId(int $tagId): self {
+    public function setTagId(string $tagId): self {
         $this->tagId = $tagId;
         $this->tagName = null;
         return $this;
@@ -51,9 +51,9 @@ class Tag {
     /**
      * Returns the tag id.
      *
-     * @return string Returns the tag id.
+     * @return ?string Returns the tag id.
      */
-    public function getTagId(): string {
+    public function getTagId(): ?string {
         return $this->tagId;
     }
 
