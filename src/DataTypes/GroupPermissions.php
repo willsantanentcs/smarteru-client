@@ -46,7 +46,7 @@ class GroupPermissions {
      * exclusive with the EmployeeID tag. This is the Email returned by the
      * getUser and listUsers methods. 
      */
-    protected ?string $email;
+    protected ?string $email = null;
 
     /**
      * The employee ID of the user you want to assign to the group. The user
@@ -54,7 +54,7 @@ class GroupPermissions {
      * exclusive with the Email tag. This is the EmployeeID returned by the
      * getUser and listUsers methods. 
      */
-    protected ?string $employeeId;
+    protected ?string $employeeId = null;
 
     /**
      * Specifies if this group will be the user's home group.

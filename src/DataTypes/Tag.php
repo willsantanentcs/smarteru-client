@@ -24,10 +24,10 @@ class Tag {
     #region Properties
 
     /** The ID of the tag. */
-    protected ?string $tagId;
+    protected ?string $tagId = null;
 
     /** The name of the tag. */
-    protected ?string $tagName;
+    protected ?string $tagName = null;
 
     /** The tag's values. */
     protected string $tagValues;

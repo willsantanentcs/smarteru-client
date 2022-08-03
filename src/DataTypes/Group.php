@@ -45,7 +45,7 @@ class Group {
     protected string $name;
 
     /** The unique id of the Group. */
-    protected ?string $groupId;
+    protected ?string $groupId = null;
 
     /** The data and time when the group was created. */
     protected DateTimeInterface $createdDate;
@@ -73,7 +73,7 @@ class Group {
      * True: The account's Enable User Help setting is overriden by the group
      * False: The account's Enable User Help setting is not overriden
      */
-    protected ?bool userHelpOverrideDefault;
+    protected ?bool $userHelpOverrideDefault = null;
 
     /**
      * Specifies whether a link displays in the header of the learner interface
@@ -83,25 +83,25 @@ class Group {
      * True: A link to request help displays in the header.
      * False: A link to request help does not display in the header.
      */
-    protected ?bool userHelpEnabled;
+    protected ?bool $userHelpEnabled = null;
 
     /**
      * The email addresses to which help requests will be sent.
      */
-    protected ?array userHelpEmail;
+    protected ?array $userHelpEmail = null;
 
     /**
      * The text to be displayed with the help link in the learner interface
      * header.
      */
-    protected ?string userHelpText;
+    protected ?string $userHelpText = null;
 
     /**
      * An array of tags applied to the group.
      *
      * @var Tag[]
      */
-    protected array $tags;
+    protected ?array $tags = null;
 
     /**
      * Specifies whether there's a limit on how many users can be added to the
@@ -110,15 +110,12 @@ class Group {
      * True: There is a limit on how many users can be added to the group.
      * False: There is no limit on how many users can be added to the group.
      */
-    protected ?bool $userLimitEnabled;
+    protected ?bool $userLimitEnabled = null;
 
     /**
      * The maximum number of users that can be added to the group.
      */
-    protected ?int $userLimitAmount;
-
-    /** A count of learning modules in the group. */
-    protected int $learningModuleCount;
+    protected ?int $userLimitAmount = null;
 
     /** The group's status. */
     protected string $status;
@@ -149,7 +146,7 @@ class Group {
      * The identifier of the dashboard set to be assigned to the group. If no
      * value is provided, the account's default dashboard set is assigned.
      */
-    protected ?string $dashboardSetId;
+    protected ?string $dashboardSetId = null;
 
     #endregion Properties
 
@@ -169,7 +166,7 @@ class Group {
                 throw new InvalidArgumentException(
                     'Parameter to '
                     . __METHOD__
-                    . 'must be a list of Tag instances'
+                    . ' must be a list of Tag instances'
                 );
             }
         }
@@ -181,9 +178,9 @@ class Group {
     /**
      * Returns the group's tags.
      *
-     * @return Tag[] Returns the group's tags.
+     * @return ?Tag[] Returns the group's tags.
      */
-    public function getTags(): array {
+    public function getTags(): ?array {
         return $this->tags;
     }
 
@@ -351,62 +348,6 @@ class Group {
     }
 
     /**
-     * Sets the group's learning module count.
-     *
-     * $learningModuleCount must be >= 0 or an InvalidArgumentException is
-     * thrown.
-     *
-     * @param int $learningModuleCount The group's learning module count.
-     * @return self
-     * @throws InvalidArgumentException if value is < 0.
-     */
-    public function setLearningModuleCount(int $learningModuleCount): self {
-        if ($learningModuleCount < 0) {
-            throw new InvalidArgumentException('$learningModuleCount must be >= 0');
-        }
-
-        $this->learningModuleCount = $learningModuleCount;
-        return $this;
-    }
-
-    /**
-     * Returns the group's learning module count.
-     *
-     * @return int Returns the group's learning module count.
-     */
-    public function getLearningModuleCount(): int {
-        return $this->learningModuleCount;
-    }
-
-    /**
-     * Sets the group's user count.
-     *
-     * $userCount must be >= 0 or an InvalidArgumentException is
-     * thrown.
-     *
-     * @param int $userCount The group's user count.
-     * @return self
-     * @throws InvalidArgumentException if value is < 0.
-     */
-    public function setUserCount(int $userCount): self {
-        if ($userCount < 0) {
-            throw new InvalidArgumentException('$userCount must be >= 0');
-        }
-
-        $this->userCount = $userCount;
-        return $this;
-    }
-
-    /**
-     * Returns the group's user count.
-     *
-     * @return int Returns the group's user count.
-     */
-    public function getUserCount(): int {
-        return $this->userCount;
-    }
-
-    /**
      * Sets the group's notification email addresses.
      *
      * All members of the array must be strings. If they are not, then an
@@ -420,7 +361,7 @@ class Group {
         foreach ($notificationEmails as $email) {
             if (! is_string($email)) {
                 throw new InvalidArgumentException('Parameter to ' .
-                    __METHOD__ . 'must be a list of email addresses as strings');
+                    __METHOD__ . ' must be a list of email addresses as strings');
             }
         }
 
@@ -620,9 +561,9 @@ class Group {
     /**
      * Returns the unique id of the group.
      *
-     * @return string the unique id of the group.
+     * @return ?string the unique id of the group.
      */
-    public function getGroupId(): string {
+    public function getGroupId(): ?string {
         return $this->groupId;
     }
 
@@ -686,7 +627,9 @@ class Group {
         $parameters = $xml->addChild('Parameters');
         $group = $parameters->addChild('Group');
         $group->addChild('Name', $this->getName());
-        $group->addChild('GroupID', $this->getGroupId());
+        if (!empty($this->getGroupId())) {
+            $group->addChild('GroupID', $this->getGroupId());
+        }
         $group->addChild('Status', $this->getStatus());
         $group->addChild('Description', $this->getDescription());
         $group->addChild('HomeGroupMessage', $this->getHomeGroupMessage());
@@ -694,11 +637,16 @@ class Group {
         foreach ($this->getNotificationEmails() as $email) {
             $notificationEmails->addChild('NotificationEmail', $email);
         }
-        if (!empty($this->getUserHelpOverrideDefault())) {
-            $group->addChild('UserHelpOverrideDefault', $this->getUserHelpOverrideDefault());
+        // Using empty() to check if a bool is set doesn't work because it
+        // won't recognize a difference between null and false. isset() won't
+        // accept an expression as a parameter, so it also can't be used here.
+        if ($this->getUserHelpOverrideDefault() !== null) {
+            $valueAsString = $this->getUserHelpOverrideDefault() ? '1' : '0';
+            $group->addChild('UserHelpOverrideDefault', $valueAsString);
         }
-        if (!empty($this->getUserHelpEnabled())) {
-            $group->addChild('UserHelpEnabled', $this->getUserHelpEnabled());
+        if ($this->getUserHelpEnabled() !== null) {
+            $valueAsString = $this->getUserHelpEnabled() ? '1' : '0';
+            $group->addChild('UserHelpEnabled', $valueAsString);
         }
         if (!empty($this->getUserHelpEmail())) {
             $group->addChild('UserHelpEmail', implode(',', $this->getUserHelpEmail()));
@@ -722,8 +670,9 @@ class Group {
         }
         if (!empty($this->getUserLimitEnabled()) && !empty($this->getUserLimitAmount())) {
             $userLimit = $group->addChild('UserLimit');
-            $userLimit->addChild('Enabled', (string) $this->getUserLimitEnabled());
-            $userLimit->addChild('Amount', $this->getUserLimitAmount());
+            $valueAsString = $this->getUserLimitEnabled() ? '1' : '0';
+            $userLimit->addChild('Enabled', $valueAsString);
+            $userLimit->addChild('Amount', (string) $this->getUserLimitAmount());
         }
         $users = $group->addChild('Users');
         foreach ($this->getUsers() as $user) {
@@ -737,7 +686,8 @@ class Group {
                     'Each member of the group must be identified by either email or employee ID'
                 );
             }
-            $userTag->addChild('HomeGroup', $user->getHomeGroup());
+            $homeGroup = $user->getHomeGroup() ? '1' : '0';
+            $userTag->addChild('HomeGroup', $homeGroup);
             $permissions = $userTag->addChild('Permissions');
             foreach ($user->getPermissions() as $permission) {
                 $permissions->addChild('Code', $permission->getCode());
@@ -747,16 +697,24 @@ class Group {
         foreach ($this->getLearningModules() as $module) {
             $learningModule = $learningModules->addChild('LearningModule');
             $learningModule->addChild('ID', $module->getId());
-            $learningModule->addChild('AllowSelfEnroll', (string) $module->getAllowSelfEnroll());
-            $learningModule->addChild('AutoEnroll', (string) $module->getAutoEnroll());
+            $allowSelfEnroll = $module->getAllowSelfEnroll() ? '1' : '0';
+            $learningModule->addChild('AllowSelfEnroll', $allowSelfEnroll);
+            $autoEnroll = $module->getAutoEnroll() ? '1' : '0';
+            $learningModule->addChild('AutoEnroll', $autoEnroll);
         }
-        $subscriptionVariants = $group->addChild('SubscriptionVariants');
-        foreach ($this->getSubscriptionVariants as $variant) {
-            $subscriptionVariant = $subscriptionVariants->addChild('SubscriptionVariant');
-            $subscriptionVariant->addChild('ID', $variant->getId());
-            $subscriptionVariant->addChild('RequiresCredits', (string) $variant->getRequiresCredits());
+        if (!empty($this->getSubscriptionVariants())) {
+            $subscriptionVariants = $group->addChild('SubscriptionVariants');
+            foreach ($this->getSubscriptionVariants() as $variant) {
+                $subscriptionVariant = $subscriptionVariants->addChild('SubscriptionVariant');
+                $subscriptionVariant->addChild('ID', $variant->getId());
+                $requiresCredits = $variant->getRequiresCredits() ? '1' : '0';
+                $subscriptionVariant->addChild('RequiresCredits', $requiresCredits);
+            }
         }
         if (!empty($this->getDashboardSetId())) {
             $group->addChild('DashboardSetID', $this->getDashboardSetId());
         }
+
+        return $xml->asXML();
+    }
 }
