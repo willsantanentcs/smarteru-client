@@ -490,6 +490,91 @@ class Client {
     }
 
     /**
+     * Make a GetUserGroups query to the SmarterU API.
+     *
+     * @param GetUserGroupsQuery $query The query representing the User for which to
+     *      read the Groups.
+     * @return array An array of [$result, $errors] where $result is an array
+     *      of any information returned by the SmarterU API and $errors is an
+     *      array of any error messages returned by the SmarterU API.
+     * @throws MissingValueException If the Account API Key and/or the User
+     *      API Key are unset in both this instance of the Client and in the
+     *      query passed in as a parameter.
+     * @throws HttpException If the HTTP response includes a status code
+     *      indicating that an HTTP error has prevented the request from
+     *      being made.
+     * @throws SmarterUException If the response from the SmarterU API
+     *      reports a fatal error that prevents the request from executing.
+     */
+    public function getUserGroups(GetUserGroupsQuery $query): array {
+        // If the API keys are not already set in the query, pass them in.
+        // If they are not set in this instance of the Client or in the query,
+        // an exception will be thrown.
+        if (empty($query->getAccountApi())) {
+            $query->setAccountApi($this->getAccountApi());
+        }
+        if (empty($query->getUserApi())) {
+            $query->setUserApi($this->getUserApi());
+        }
+
+        $xml = $query->toXml();
+
+        if (empty($this->getHttpClient())) {
+            $this->setHttpClient(new HttpClient([
+                'base_uri' => self::POST_URL
+            ]));
+        }
+
+        try {
+            $response = $this
+                ->getHttpClient()
+                ->request('POST', self::POST_URL, ['package' => $xml]);
+        } catch (\Exception $e) {
+            throw new HttpException($e->getMessage());
+        }
+
+        $body = (string) $response->getBody();
+        $bodyAsXml = simplexml_load_string($body);
+        $result = (string) $bodyAsXml->Result;
+
+        $errorMessages = [];
+        $errors = $bodyAsXml->Errors;
+        if (count($errors) !== 0) {
+            $errorMessages = $this->readErrors($errors);
+        }
+
+        if (strcmp($result, 'Failed') == 0) {
+            $errorsAsString = '';
+            foreach ($errorMessages as $id => $message) {
+                $errorsAsString .= $id;
+                $errorsAsString .= ': ';
+                $errorsAsString .= $message;
+                $errorsAsString .= ', ';
+            }
+            throw new SmarterUException($errorsAsString);
+        }
+
+        $groupsAsXml = $bodyAsXml->Info->UserGroups;
+        $groups = [];
+
+        foreach ((array) $groupsAsXml->Group as $group) {
+            $name = $group['Name'];
+            $identifier = $group['Identifier'];
+            $isHomeGroup = $group['IsHomeGroup'];
+            $permissions = $group['Permissions'];
+            $groups[] = $group;
+        }
+
+        $result = [
+            'Response' => $groups,
+            'Errors' => $errorMessages
+        ];
+
+        return $result;
+
+    }
+
+    /**
      * Translate the error message(s) returned by the SmarterU API to an array
      * of 'ErrorID' => 'ErrorMessage'. For any non-fatal errors, this array
      * will be part of the array returned by the request methods. For any fatal
