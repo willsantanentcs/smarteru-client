@@ -19,6 +19,7 @@ use CBS\SmarterU\Exceptions\HttpException;
 use CBS\SmarterU\Exceptions\SmarterUException;
 use CBS\SmarterU\Queries\BaseQuery;
 use CBS\SmarterU\Queries\GetUserQuery;
+use CBS\SmarterU\Queries\GetUserGroupsQuery;
 use CBS\SmarterU\Queries\ListUsersQuery;
 use DateTime;
 use GuzzleHttp\Client as HttpClient;
@@ -554,14 +555,38 @@ class Client {
             throw new SmarterUException($errorsAsString);
         }
 
-        $groupsAsXml = $bodyAsXml->Info->UserGroups;
-        $groups = [];
+        $groupsAsXml = (array) $bodyAsXml->Info->UserGroups->children();
 
-        foreach ((array) $groupsAsXml->Group as $group) {
+        /**
+         * SimpleXMLElement attempts to be clever with formatting when there
+         * are multiple child nodes with the same name, but in this situation
+         * it causes errors to occur because the formatting will be different
+         * depending on whether there is just one Group returned or multiple
+         * Groups. The following "if" statement re-formats the single Group
+         * node to match the formatting used automatically for multiple Groups.
+         */
+        if ($groupsAsXml['Group'] instanceof SimpleXMLElement) {
+            $groupsAsXml = [
+                'Group' => [$groupsAsXml['Group']]
+            ];
+        }
+
+        $groups = [];
+        foreach ($groupsAsXml['Group'] as $group) {
+            $group = (array) $group;
             $name = $group['Name'];
             $identifier = $group['Identifier'];
             $isHomeGroup = $group['IsHomeGroup'];
-            $permissions = $group['Permissions'];
+            $permissions = [];
+            foreach ($group['Permissions'] as $permission) {
+                $permissions[] = (string) $permission;
+            }
+            $group = [
+                'Name' => $name,
+                'Identifier' => $identifier,
+                'IsHomeGroup' => $isHomeGroup,
+                'Permissions' => $permissions
+            ];
             $groups[] = $group;
         }
 
@@ -571,7 +596,6 @@ class Client {
         ];
 
         return $result;
-
     }
 
     /**
