@@ -555,39 +555,18 @@ class Client {
             throw new SmarterUException($errorsAsString);
         }
 
-        $groupsAsXml = (array) $bodyAsXml->Info->UserGroups->children();
-
-        /**
-         * SimpleXMLElement attempts to be clever with formatting when there
-         * are multiple child nodes with the same name, but in this situation
-         * it causes errors to occur because the formatting will be different
-         * depending on whether there is just one Group returned or multiple
-         * Groups. The following "if" statement re-formats the single Group
-         * node to match the formatting used automatically for multiple Groups.
-         */
-        if ($groupsAsXml['Group'] instanceof SimpleXMLElement) {
-            $groupsAsXml = [
-                'Group' => [$groupsAsXml['Group']]
-            ];
-        }
-
         $groups = [];
-        foreach ($groupsAsXml['Group'] as $group) {
-            $group = (array) $group;
-            $name = $group['Name'];
-            $identifier = $group['Identifier'];
-            $isHomeGroup = $group['IsHomeGroup'];
+        foreach ($bodyAsXml->Info->UserGroups->children() as $group) {
+            $currentGroup = [];
             $permissions = [];
-            foreach ($group['Permissions'] as $permission) {
+            foreach ($group->Permissions->children() as $permission) {
                 $permissions[] = (string) $permission;
             }
-            $group = [
-                'Name' => $name,
-                'Identifier' => $identifier,
-                'IsHomeGroup' => $isHomeGroup,
-                'Permissions' => $permissions
-            ];
-            $groups[] = $group;
+            $currentGroup['Name'] = $group->Name;
+            $currentGroup['Identifier'] = $group->Identifier;
+            $currentGroup['IsHomeGroup'] = $group->IsHomeGroup;
+            $currentGroup['Permissions'] = $permissions;
+            $groups[] = $currentGroup;
         }
 
         $result = [
