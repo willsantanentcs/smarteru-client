@@ -1114,7 +1114,7 @@ class User {
      *
      * @return string an XML representation of the user
      */
-    public function toSimpleXML(
+    public function toXML(
         ?string $accountApi,
         ?string $userApi,
         string $methodName

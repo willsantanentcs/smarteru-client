@@ -130,7 +130,7 @@ class Client {
      *      reports a fatal error that prevents the request from executing.
      */
     public function createUser(User $user) {
-        $xml = $user->toSimpleXml(
+        $xml = $user->toXml(
             $this->getAccountApi(),
             $this->getUserApi(),
             'createUser'
@@ -432,7 +432,7 @@ class Client {
      *      reports a fatal error that prevents the request from executing.
      */
     public function updateUser(User $user) {
-        $xml = $user->toSimpleXml(
+        $xml = $user->toXml(
             $this->getAccountApi(),
             $this->getUserApi(),
             'updateUser'

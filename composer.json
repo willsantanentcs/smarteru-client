@@ -19,7 +19,8 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "ext-SimpleXML": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "9.5"

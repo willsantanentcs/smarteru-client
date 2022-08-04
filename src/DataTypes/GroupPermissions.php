@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contains SmarterU\DataTypes\Group.
+ * Contains CBS\SmarterU\DataTypes\GroupPermissions.
  *
  * @author      Will Santanen <will.santanen@thecoresolution.com>
  * @copyright   $year$ Core Business Solutions

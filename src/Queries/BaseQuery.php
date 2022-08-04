@@ -81,12 +81,12 @@ abstract class BaseQuery {
      *      Key are not set.
      */
     public function createBaseXml(): SimpleXMLElement {
-        if (!isset($this->accountApi)) {
+        if (empty($this->getAccountApi())) {
             throw new MissingValueException(
                 'Account API key must be set before creating a query.'
             );
         }
-        if (!isset($this->userApi)) {
+        if (empty($this->getUserApi())) {
             throw new MissingValueException(
                 'User API key must be set before creating a query.'
             );

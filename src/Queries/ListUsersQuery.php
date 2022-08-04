@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace CBS\SmarterU\Queries;
 
-use CBS\SmarterU\Queries\BaseQuery;
 use CBS\SmarterU\Queries\Tags\DateRangeTag;
 use CBS\SmarterU\Queries\Tags\MatchTag;
 use SimpleXMLElement;

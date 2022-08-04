@@ -1,9 +1,6 @@
 <?php
 
 /**
- * <?php
-
-/**
  * Contains SmarterU\DataTypes\Permission.
  *
  * @author      Will Santanen <will.santanen@thecoresolution.com>

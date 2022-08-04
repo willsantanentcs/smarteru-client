@@ -16,7 +16,6 @@ namespace CBS\SmarterU\Queries;
 
 use SimpleXMLElement;
 use CBS\SmarterU\Exceptions\MissingValueException;
-use CBS\SmarterU\Queries\BaseQuery;
 
 /**
  * Represents a getUser query made to the SmarterU API.

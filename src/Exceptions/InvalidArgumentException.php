@@ -5,9 +5,9 @@
  *
  * @author     Brian Reich <brian.reich@thecoresolution.com>
  * @copyright  $year$ Core Business Solutions
- * @license    Proprietary
+ * @license    MIT
  * @version    $version$
- * @since      9/4/2019
+ * @since      2022/07/25
  */
 
 declare(strict_types=1);
